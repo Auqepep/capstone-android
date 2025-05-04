@@ -40,7 +40,7 @@ import Logo from "../assets/logo.svg";
 
 const Navbar = ({ isLoggedIn }) => {
   return (
-    <nav className="flex justify-between items-center px-8 py-4 bg-white shadow">
+    <nav className="flex justify-between items-center px-8 py-4 font-header font-bold bg-white shadow">
       <Link to="/"> 
         <img src={Logo} alt="FixMyCity Logo" className="h-8 w-auto" /> 
       </Link>
@@ -48,13 +48,16 @@ const Navbar = ({ isLoggedIn }) => {
       <div className="flex items-center gap-4"> 
         {isLoggedIn ? (
           <> 
-            <Link to="/dashboard" className="text-gray-700 hover:text-blue-600 text-sm">
+            <Link to="/dashboard" className="text-gray-700 
+            hover:text-(--btn-secondary) text-sm transition duration-200 ease-in-out">
               Dashboard
             </Link>
-            <Link to="/laporan" className="text-gray-700 hover:text-blue-600 text-sm">
+            <Link to="/laporan" className="text-gray-700 
+            hover:text-(--btn-secondary) text-sm transition duration-200 ease-in-out">
               Laporan
             </Link>
-            <Link to="/logout" className="px-4 py-2 bg-gray-200 text-gray-800 rounded-full hover:bg-gray-300 text-sm">
+            <Link to="/logout" className="px-4 py-2 bg-gray-200 text-gray-800 rounded-full 
+            hover:bg-gray-300 text-sm transition duration-300 ease-in-out">
               Logout
             </Link>
           </>
