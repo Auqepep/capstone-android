@@ -1,5 +1,7 @@
 import React from "react";
-import Button from "../components/Button";
+import Button from "../../components/button.jsx";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const LandingPage = () => {
   return (
@@ -30,16 +32,10 @@ const LandingPage = () => {
         </h3>
 
         <div className="flex gap-4 flex-col sm:flex-row">
-          <Button variant="primary">Login</Button>
-          <Button variant="secondary">Sign Up</Button>
+          <Button title={"Login"} condition={false} to={"/login"}/>
+        
         </div>
       </div>
-
-      {/* Decorative background */}
-      <div
-        className="absolute top-0 right-0 w-2/5 h-full bg-no-repeat bg-right-center opacity-50 -z-10"
-        style={{ backgroundImage: "url('/wavy-bg.svg')" }}
-      />
     </div>
   );
 };

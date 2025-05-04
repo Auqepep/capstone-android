@@ -1,16 +1,46 @@
 import React from "react";
-import Navbar from "../components/Navbar"; // Fixed path from src/App to src/components
-import LandingPage from "../App/LandingPage"; // Fixed path
+import { useState } from "react"; 
+import { Routes, Route } from "react-router-dom";
+import Navbar from "../components/Navbar"; 
+import LandingPage from "../App/pages/LandingPage"; 
+import Laporan from "../App/pages/Laporan";
+import Login from "../App/pages/Login";
+
+
+// function App() {
+
+//   const [isLoggedIn, setIsLoggedIn] = useState(true); 
+
+
+//   return (
+//     <div className="min-h-screen flex flex-col bg-gray-50">
+//       <Navbar isLoggedIn={isLoggedIn} />
+      
+
+//       <main className="flex-1 p-8 max-w-6xl mx-auto w-full">
+//         <LandingPage />
+//       </main>
+//     </div>
+//   );
+// }
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+
   return (
     <div className="min-h-screen flex flex-col bg-gray-50">
-      <Navbar />
+      <Navbar isLoggedIn={isLoggedIn} />
+      
       <main className="flex-1 p-8 max-w-6xl mx-auto w-full">
-        <LandingPage />
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/laporan" element={<Laporan />} />
+          <Route path="/login" element={<Login />} />
+        </Routes>
       </main>
     </div>
   );
 }
 
 export default App;
+
