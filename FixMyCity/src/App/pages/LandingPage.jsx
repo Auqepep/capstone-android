@@ -32,7 +32,7 @@ const LandingPage = () => {
         </h3>
 
         <div className="flex gap-4 flex-col sm:flex-row">
-          <Button title={"Login"} condition={false} to={"/login"}/>
+          <Button title={"Login"} condition={false} to={"/login"} className="py-2 px-50 text-center"/>
         
         </div>
       </div>

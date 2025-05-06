@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import LandingPage from "../App/pages/LandingPage"; 
 import Laporan from "../App/pages/Laporan";
 import Login from "../App/pages/Login";
+import SignUp from "../App/pages/SignUp";
 
 
 // function App() {
@@ -36,6 +37,7 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/laporan" element={<Laporan />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/SignUp" element={<SignUp />} />
         </Routes>
       </main>
     </div>
