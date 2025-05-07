@@ -1,12 +1,14 @@
+
 import React from "react";
 import Button from "../../components/button.jsx";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import imgbuilding from "../../assets/building.svg"; // Adjust the path as necessary
 
 const LandingPage = () => {
   return (
-    <div className="relative z-10">
-      <div className="max-w-4xl">
+    <div className="relative flex flex-col md:flex-row items-start justify-between container mx-auto px-4 mt-10">
+      <div className="w-full md:w-3/5 z-10">
         <h1 className="text-4xl font-bold mb-4 text-gray-800">
           Selamat datang!
         </h1>
@@ -33,8 +35,15 @@ const LandingPage = () => {
 
         <div className="flex gap-4 flex-col sm:flex-row">
           <Button title={"Login"} condition={false} to={"/login"} className="px-50"/>
-        
         </div>
+      </div>
+      
+      <div className="w-full md:w-2/5 flex justify-end">
+        <img
+          src={imgbuilding}
+          alt="Background"
+          className="w-100 p-10"
+        />
       </div>
     </div>
   );
