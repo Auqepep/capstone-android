@@ -1,6 +1,6 @@
 import React from "react";
 import {
-  Check, // Still unused, but kept from original import
+  Check,
   MoreHorizontal,
   Heart,
   MessageSquare,
@@ -8,13 +8,13 @@ import {
   TrendingUp,
   Users,
   Eye,
-  Edit // Added Edit icon for profile button
+  Edit 
 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import { Avatar } from "../../components/ui/avatar";
-import placeholder from "../../assets/placeholder.jpg"; // Placeholder image for posts
-// import { Badge } from "../../components/ui/badge"; // Badge was imported but not used, removed for cleanliness
+import placeholder from "../../assets/placeholder.jpg"; 
+
 
 function SocialDashboard() {
   // Sample data
@@ -28,8 +28,8 @@ function SocialDashboard() {
   const insightsData = [
     {
       icon: <TrendingUp className="h-4 w-4 text-green-500" />,
-      text: "Kemarin engagement rate meningkat sebesar",
-      highlight: "12%"
+      text: "Anda telah melaporkan kerusakan sebanyak",
+      highlight: "10 laporan"
     },
     {
       icon: <Users className="h-4 w-4 text-blue-500" />,
@@ -61,45 +61,45 @@ function SocialDashboard() {
     },
     {
       user: {
-        name: "Ann Louis", // Same user, could be different
+        name: "Ann Louis", 
         avatar: "/api/placeholder/32/32",
-        time: "2 days ago" // Different time
+        time: "2 days ago" 
       },
-      content: "lorem ipsum sit dolor amet", // Different content
-      image: placeholder, // Different placeholder image
+      content: "lorem ipsum sit dolor amet", 
+      image: placeholder, 
       stats: {
-        likes: 890, // Different stats
+        likes: 890, 
         comments: 55,
         shares: 15
       }
-    }
-    // Add more post objects here if needed
+    },
+    
   ];
 
   const recommendedUsers = [
     {
       name: "Desiree Baptiste",
-      role: "Fashion Designer, YouTuber",
+      role: "Kritik Pemerintah",
       avatar: "/api/placeholder/40/40", // Using placeholder URL
     },
     {
       name: "James Derwent",
-      role: "Instagram Influencer, Traveler",
+      role: "Kritik Aspal",
       avatar: "/api/placeholder/40/40", // Using placeholder URL
     },
     {
       name: "Jocelyn Westervelt",
-      role: "Instagram Influencer, Model",
+      role: "Kritik Bangunan",
       avatar: "/api/placeholder/40/40", // Using placeholder URL
     },
     {
       name: "Philip Amiroff",
-      role: "TikTok Fashion Influencer",
+      role: "Kritik Tata Kelola",
       avatar: "/api/placeholder/40/40", // Using placeholder URL
     },
     {
       name: "Ann Louis",
-      role: "Instagram Influencer",
+      role: "Kritik Jalanan",
       avatar: "/api/placeholder/40/40", // Using placeholder URL
     }
   ];
@@ -107,7 +107,7 @@ function SocialDashboard() {
   return (
     // Outermost wrapper: Handles page background, max width, centering
     // Removed rounded-2xl from here, will apply rounded-t-2xl to profile card
-    <div className="max-w-screen-xl mx-auto bg-gray-100 pb-6">
+      <div className="max-w-screen-xl mx-auto bg-[#F7FBFA] pb-6">
 
       {/* Profile Card - Full width at the top */}
       <div className="bg-(--btn-primary) text-white p-5 border-b shadow-sm rounded-t-2xl"> 
@@ -116,29 +116,22 @@ function SocialDashboard() {
             <img src={profileData.avatar} alt={`${profileData.name}'s profile avatar`} />
           </Avatar>
           <div>
-            <h2 className="text-2xl font-bold ">{profileData.name}</h2> {/* Removed redundant text-white */}
-            <p className="text-sm mt-1">{profileData.role}</p> {/* Removed redundant text-white */}
+            <h2 className="text-2xl font-bold ">{profileData.name}</h2>
+            <p className="text-sm mt-1">{profileData.role}</p> 
             {/* Example stat */}
-            <p className="text-xs mt-2">{profileData.connections} connections</p> {/* Changed text, removed redundant text-white */}
-            {/* Removed Edit button as it wasn't explicitly requested for this section update */}
-            {/* <Button size="sm" variant="outline" className="mt-3 text-gray-700 border-gray-300 hover:bg-gray-100">
-              <Edit className="mr-2 h-4 w-4" /> Edit Profile
-            </Button> */}
+            <p className="text-xs mt-2">{profileData.connections} connections</p> 
           </div>
         </div>
       </div>
 
       {/* Container for the three columns - Flex layout starts here below the profile card */}
-      {/* Added horizontal padding (px-6) on large screens for more space inside the wrapper */}
-      <div className="flex flex-col lg:flex-row lg:gap-6 mt-6 px-4 lg:px-2 font-body"> {/* Changed lg:px-0 to lg:px-6 */}
+      <div className="flex flex-col lg:flex-row lg:gap-6 mt-6 px-4 lg:px-2 font-body">
         {/* Column 1: Insights */}
-        {/* Set width to full on small, 1/3 on large */}
         <div className="w-full lg:w-1/3">
           {/* Header (keep inside column) */}
           <div className="bg-white p-4 border-b rounded-t-md">
-            <h1 className="text-lg font-medium">Daily Insights</h1>
+            <h1 className="text-lg font-medium">Insight Tracker</h1>
           </div>
-          {/* Insights Cards (keep inside column, adjust padding if needed) */}
           <div className="p-4 grid grid-cols-1 gap-3 bg-white rounded-b-md shadow-sm">
             {insightsData.map((insight, index) => (
               <Card key={index} className="bg-white shadow-sm border">
@@ -146,7 +139,7 @@ function SocialDashboard() {
                   <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
                     {insight.icon}
                   </div>
-                  <p className="text-sm text-gray-700"> {/* Added text-gray-700 for readability */}
+                  <p className="text-sm text-gray-700">
                     {insight.text}{" "}
                     <span className="font-bold text-green-600">{insight.highlight}</span>
                     {insight.suffix && ` ${insight.suffix}`}
@@ -158,16 +151,13 @@ function SocialDashboard() {
         </div>
 
         {/* Column 2: Post Feed */}
-            {/* This column now contains multiple posts */}
             <div className="w-full lg:w-1/3 mt-4 lg:mt-0 bg-white rounded-md shadow-md overflow-hidden">
               {postsData.map((post, index) => (
-                // Each post item includes content and actions
-                // Add padding around the post content and conditional border/margin for separation
                 <div
                   key={index}
                   className={`px-4 py-4 ${
                     index < postsData.length - 1 ? "border-b border-gray-100 mb-4" : ""
-                  }`} // Added padding, conditional border-b and mb
+                  }`} 
                 >
                   <div className="flex justify-between items-center mb-3">
                     <div className="flex items-center gap-2">
@@ -213,13 +203,10 @@ function SocialDashboard() {
             </div>
 
         {/* Column 3: Recommended Users */}
-        {/* Set width to full on small, 1/3 on large, add top margin when stacked */}
         <div className="w-full lg:w-1/3 mt-4 lg:mt-0">
-           {/* Added a header for recommended users */}
            <div className="px-4 py-3 bg-gray-100 border-b border-t lg:border-t-0 border-gray-200 rounded-t-md">
                <h2 className="text-sm font-medium text-gray-700">People You Might Know</h2>
            </div>
-          {/* Recommended Users List (keep inside column, remove outer margin) */}
           <div className="mt-0 bg-white rounded-b-md shadow-sm">
             {recommendedUsers.map((user, index) => (
               <div key={index} className="px-4 py-2 flex items-center justify-between border-b border-gray-100 last:border-b-0">

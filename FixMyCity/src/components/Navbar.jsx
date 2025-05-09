@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from 'react-router-dom';
 import Logo from "../assets/logo.svg"; 
 import Button from "../components/button.jsx"; 
 
@@ -67,8 +67,9 @@ const Navbar = ({ isLoggedIn }) => {
           <Button 
           title={"? help"}
           to={"/help"}
-          className="bg-gray-300 flex items-center gap-1 px-4 py-2 border border-gray-300 rounded-full 
-          hover:bg-gray-500 text-sm text-gray-700"
+          condition={true}
+          className=" flex items-center gap-1 px-4 py-2 border border-gray-300 rounded-full
+          hover:bg-(--btn-secondary)"
           />
         )}
       </div>

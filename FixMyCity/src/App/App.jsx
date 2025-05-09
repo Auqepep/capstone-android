@@ -6,6 +6,7 @@ import LandingPage from "../App/pages/LandingPage";
 import Laporan from "../App/pages/Laporan";
 import Login from "../App/pages/Login";
 import Dashboard from "../App/pages/Dashboard";
+import SignUp  from "./pages/SignUp"; 
 
 
 // function App() {
@@ -29,14 +30,15 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100">
+    <div className="min-h-screen flex flex-col bg-[#F7FBFA]">
       <Navbar isLoggedIn={isLoggedIn} />
       
       <main className="flex-1 p-8 max-w-6xl mx-auto w-full">
         <Routes>
-          <Route path="/" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage isLoggedIn={true}/>} />
           <Route path="/laporan" element={<Laporan />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/signUp" element={<SignUp />} />
           <Route path="/dashboard" element={<Dashboard />} />
         </Routes>
       </main>
