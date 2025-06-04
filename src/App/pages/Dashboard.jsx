@@ -12,15 +12,15 @@ import {
   ChevronDown
 } from "lucide-react";
 // Card, CardContent, CardHeader are removed as their usage (Insights) is removed
-import { Button } from "@/components/ui/button";
-import { Avatar } from "@/components/ui/avatar"; // Assuming AvatarFallback and AvatarImage are part of this or handled internally
-import { Badge } from "@/components/ui/badge";
+import { Button } from "../../components/ui/button";
+import { Avatar } from "../../components/ui/avatar"; // Assuming AvatarFallback and AvatarImage are part of this or handled internally
+import { Badge } from "../../components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "../../components/ui/dropdown-menu";
 
 //warna
 const statusOptions = ["Belum Jalan", "Dalam Progress", "Fixed"];

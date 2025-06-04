@@ -1,4 +1,4 @@
-import Button from "@/components/Button.jsx";
+import Button from "../../components/Button.jsx";
 import { Link } from "react-router-dom";
 import SignUp from "../pages/SignUp";
 

@@ -7,18 +7,18 @@ import {
   Edit,
   Search,
 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { Card, CardContent, CardHeader } from "../../components/ui/card";
+import { Button } from "../../components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { Badge } from "../../components/ui/badge";
+import { Input } from "../../components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "../../components/ui/select";
 import { useState } from "react";
 
 // Sample initial data for posts with commentsList
@@ -80,9 +80,9 @@ const initialPostsData = [
 
 // Status badge color mapping
 const statusColors = {
-  "Belum Jalan": "destructive",
-  "Dalam progress": "warning",
-  Fixed: "success",
+  "Pending": "destructive",
+  "Diproses": "warning",
+  "Selesai": "success",
 };
 
 function SocialFeed() {
