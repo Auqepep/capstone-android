@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import placeholder from "@/assets/placeholder.jpg";
+import placeholder from "../../assets/placeholder.jpg";
 
 //warna
 const statusOptions = ["Belum Jalan", "Dalam Progress", "Fixed"];
