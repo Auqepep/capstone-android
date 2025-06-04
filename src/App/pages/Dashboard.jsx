@@ -23,7 +23,7 @@ import {
 } from "../../components/ui/dropdown-menu"; 
 import placeholder from "../../assets/placeholder.jpg";
 
-// Define status options and their colors
+//warna
 const statusOptions = ["Belum Jalan", "Dalam Progress", "Fixed"];
 const statusColors = {
   "Belum Jalan": "destructive",
