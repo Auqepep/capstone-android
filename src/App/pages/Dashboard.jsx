@@ -5,23 +5,23 @@ import {
   Heart,
   MessageSquare,
   Repeat2,
-  TrendingUp,
-  Users,
-  Eye,
+  // TrendingUp, // Removed as Insights are removed
+  // Users,      // Removed as Insights are removed
+  // Eye,        // Removed as Insights are removed
   Edit,
-  ChevronDown // Added for status dropdown
+  ChevronDown
 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "../../components/ui/card";
-import { Button } from "../../components/ui/button"; 
-import { Avatar } from "../../components/ui/avatar";
-import { Badge } from "../../components/ui/badge"; 
+// Card, CardContent, CardHeader are removed as their usage (Insights) is removed
+import { Button } from "@/components/ui/button";
+import { Avatar } from "@/components/ui/avatar"; // Assuming AvatarFallback and AvatarImage are part of this or handled internally
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"; 
-import placeholder from "../../assets/placeholder.jpg";
+} from "@/components/ui/dropdown-menu";
+import placeholder from "@/assets/placeholder.jpg";
 
 //warna
 const statusOptions = ["Belum Jalan", "Dalam Progress", "Fixed"];
@@ -33,15 +33,15 @@ const statusColors = {
 
 const initialPostsData = [
   {
-    id: "post1", // Added unique ID
+    id: "post1",
     user: {
       name: "Ann Louis",
-      avatar: "/api/placeholder/32/32",
+      avatar: "/api/placeholder/32/32", // Pastikan path ini valid atau ganti dengan placeholder
       time: "14 jam yang lalu"
     },
     content: "Hello everybody! We are preparing a new Fresh campaign. Here's a sneak peek :)",
     image: placeholder,
-    status: "Dalam Progress", // Initial status
+    status: "Dalam Progress",
     stats: {
       likes: 1250,
       comments: 87,
@@ -49,7 +49,7 @@ const initialPostsData = [
     }
   },
   {
-    id: "post2", // Added unique ID
+    id: "post2",
     user: {
       name: "Ann Louis",
       avatar: "/api/placeholder/32/32",
@@ -57,7 +57,7 @@ const initialPostsData = [
     },
     content: "lorem ipsum sit dolor amet",
     image: placeholder,
-    status: "Belum Jalan", // Initial status
+    status: "Belum Jalan",
     stats: {
       likes: 890,
       comments: 55,
@@ -65,19 +65,36 @@ const initialPostsData = [
     }
   },
   {
-    id: "post3", // Added a third post for variety
+    id: "post3",
     user: {
       name: "John Doe",
       avatar: "/api/placeholder/32/32",
       time: "3 days ago"
     },
     content: "Just fixed the pothole on Main St. #communityservice",
-    image: placeholder, // You might want a different placeholder or actual image
-    status: "Fixed", // Initial status
+    image: placeholder,
+    status: "Fixed",
     stats: {
       likes: 750,
       comments: 40,
       shares: 10
+    }
+  },
+  // Tambahkan lebih banyak post untuk melihat efek grid dengan baik
+  {
+    id: "post4",
+    user: {
+      name: "Jane Smith",
+      avatar: "/api/placeholder/32/32",
+      time: "5 days ago"
+    },
+    content: "Exploring new design trends for our upcoming project. #designthinking",
+    image: placeholder, // Ganti dengan gambar yang relevan jika ada
+    status: "Dalam Progress",
+    stats: {
+      likes: 920,
+      comments: 65,
+      shares: 20
     }
   }
 ];
@@ -93,47 +110,19 @@ function SocialDashboard() {
     );
   };
 
-  // Sample data (rest of the data remains the same)
   const profileData = {
     name: "Ann Louis",
-    avatar: "/api/placeholder/80/80",
+    avatar: "/api/placeholder/80/80", // Pastikan path ini valid
     role: "Influencer | Content Creator",
     connections: 145
   };
 
-  const insightsData = [
-    {
-      icon: <TrendingUp className="h-4 w-4 text-green-500" />,
-      text: "Anda telah melaporkan kerusakan sebanyak",
-      highlight: "10 laporan"
-    },
-    {
-      icon: <Users className="h-4 w-4 text-blue-500" />,
-      text: "Anda mendapatkan",
-      highlight: "10 pengikut baru"
-    },
-    {
-      icon: <Eye className="h-4 w-4 text-purple-500" />,
-      text: "Anda memiliki",
-      highlight: "101 pengunjung",
-      suffix: "di profil Anda"
-    }
-  ];
-
-  const recommendedUsers = [
-    { name: "Desiree Baptiste", role: "Kritik Pemerintah", avatar: "/api/placeholder/40/40" },
-    { name: "James Derwent", role: "Kritik Aspal", avatar: "/api/placeholder/40/40" },
-    { name: "Jocelyn Westervelt", role: "Kritik Bangunan", avatar: "/api/placeholder/40/40" },
-    { name: "Philip Amiroff", role: "Kritik Tata Kelola", avatar: "/api/placeholder/40/40" },
-    { name: "Ann Louis", role: "Kritik Jalanan", avatar: "/api/placeholder/40/40" }
-  ];
-
   return (
-    <div className="max-w-screen-xl mx-auto bg-[#F7FBFA] pb-6">
+    <div className="max-w-screen-xl mx-auto bg-[#F7FBFA] pb-6 min-h-screen">
       {/* Profile Card */}
-      <div className="bg-[var(--btn-primary)] text-white p-5 border-b shadow-sm rounded-t-2xl"> {/* Assuming --btn-primary is defined CSS variable */}
+      <div className="bg-[var(--btn-primary)] text-white p-5 border-b shadow-sm rounded-t-2xl">
         <div className="flex items-center gap-6 font-header">
-          <Avatar className="h-20 w-20 border">
+          <Avatar className="h-20 w-20 border-2 border-white"> {/* Menambahkan border agar terlihat di bg gelap */}
             <img src={profileData.avatar} alt={`${profileData.name}'s profile avatar`} className="rounded-full object-cover h-full w-full" />
           </Avatar>
           <div>
@@ -144,137 +133,83 @@ function SocialDashboard() {
         </div>
       </div>
 
-      {/* Container for the three columns */}
-      <div className="flex flex-col lg:flex-row lg:gap-6 mt-6 px-4 lg:px-2 font-body">
-        {/* Column 1: Insights */}
-        <div className="w-full lg:w-1/3">
-          <div className="bg-white p-4 border-b rounded-t-md">
-            <h1 className="text-lg font-medium">Insight Tracker</h1>
-          </div>
-          <div className="p-4 grid grid-cols-1 gap-3 bg-white rounded-b-md shadow-sm">
-            {insightsData.map((insight, index) => (
-              <Card key={index} className="bg-white shadow-sm border">
-                <CardContent className="p-3 flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-full bg-gray-100 flex items-center justify-center">
-                    {insight.icon}
+      {/* Container for the main content (Post Feed in a Grid) */}
+      <div className="mt-6 px-4 lg:px-2 font-body">
+        {/* Post Feed Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {posts.map((post) => (
+            <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
+              {/* Card Header: User Info and Actions */}
+              <div className="px-4 pt-4">
+                <div className="flex justify-between items-start mb-3">
+                  <div className="flex items-center gap-2">
+                    <Avatar className="h-10 w-10 border">
+                      <img src={post.user.avatar} alt={`${post.user.name}'s avatar`} className="rounded-full object-cover h-full w-full" />
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-sm text-gray-800">{post.user.name}</p>
+                      <p className="text-xs text-gray-500">{post.user.time}</p>
+                    </div>
                   </div>
-                  <p className="text-sm text-gray-700">
-                    {insight.text}{" "}
-                    <span className="font-bold text-green-600">{insight.highlight}</span>
-                    {insight.suffix && ` ${insight.suffix}`}
-                  </p>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-
-        {/* Column 2: Post Feed */}
-        <div className="w-full lg:w-1/3 mt-4 lg:mt-0 bg-white rounded-md shadow-md overflow-hidden">
-          {posts.map((post, index) => (
-            <div
-              key={post.id} // Use post.id for key
-              className={`px-4 py-4 ${
-                index < posts.length - 1 ? "border-b border-gray-100" : "" // Removed mb-4 to avoid double spacing
-              }`}
-            >
-              <div className="flex justify-between items-start mb-3"> {/* Changed to items-start for better alignment */}
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-10 w-10 border">
-                    <img src={post.user.avatar} alt={`${post.user.name}'s avatar`} className="rounded-full object-cover h-full w-full" />
-                  </Avatar>
-                  <div>
-                    <p className="font-medium text-sm text-gray-800">{post.user.name}</p>
-                    <p className="text-xs text-gray-500">{post.user.time}</p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2"> {/* Container for status and more options */}
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Badge
-                        variant={statusColors[post.status]}
-                        className="capitalize cursor-pointer py-1 px-2 text-xs"
-                      >
-                        {post.status} <ChevronDown className="h-3 w-3 ml-1 inline-block" />
-                      </Badge>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      {statusOptions.map((statusOption) => (
-                        <DropdownMenuItem
-                          key={statusOption}
-                          onClick={() => handleStatusChange(post.id, statusOption)}
-                          className={post.status === statusOption ? "bg-gray-100" : ""}
+                  <div className="flex items-center">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Badge
+                          variant={statusColors[post.status]}
+                          className="capitalize cursor-pointer py-1 px-2 text-xs hover:opacity-80 transition-opacity"
                         >
-                          <Check className={`h-4 w-4 mr-2 ${post.status === statusOption ? 'opacity-100' : 'opacity-0'}`} />
-                          {statusOption}
-                        </DropdownMenuItem>
-                      ))}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-
-                  <Button variant="ghost" size="icon" className="h-8 w-8">
-                    <MoreHorizontal className="h-4 w-4 text-gray-500" />
-                  </Button>
+                          {post.status} <ChevronDown className="h-3 w-3 ml-1 inline-block" />
+                        </Badge>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        {statusOptions.map((statusOption) => (
+                          <DropdownMenuItem
+                            key={statusOption}
+                            onClick={() => handleStatusChange(post.id, statusOption)}
+                            className={`text-xs ${post.status === statusOption ? "bg-gray-100" : ""}`}
+                          >
+                            <Check className={`h-3 w-3 mr-2 ${post.status === statusOption ? 'opacity-100' : 'opacity-0'}`} />
+                            {statusOption}
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 ml-1">
+                      <MoreHorizontal className="h-4 w-4 text-gray-500" />
+                    </Button>
+                  </div>
                 </div>
               </div>
 
-              <p className="text-sm mb-3 text-gray-700">{post.content}</p>
-
-              {post.image && ( // Conditionally render image
-                <div className="rounded-md overflow-hidden mb-3">
-                  <img src={post.image} alt="Post related content" className="w-full object-cover max-h-96" />
+              {/* Card Content: Post Text and Image */}
+              <div className="px-4 pb-1 flex-grow"> {/* flex-grow agar konten mengisi ruang */}
+                <p className="text-sm mb-3 text-gray-700 leading-relaxed">{post.content}</p>
+                {post.image && (
+                  <div className="rounded-md overflow-hidden mb-3 border">
+                    <img src={post.image} alt="Post content" className="w-full object-cover max-h-72" />
+                  </div>
+                )}
+              </div>
+              
+              {/* Card Stats */}
+              <div className="px-4 pb-3">
+                <div className="flex gap-4 text-xs text-gray-500">
+                  <span>{post.stats.likes} likes</span>
+                  <span>{post.stats.comments} comments</span>
                 </div>
-              )}
-
-              <div className="flex gap-4 text-xs text-gray-500 mb-3">
-                <span>{post.stats.likes} likes</span>
-                <span>{post.stats.comments} comments</span>
-                <span>{post.stats.shares} shares</span>
               </div>
 
-              <div className="flex justify-between border-t border-gray-200 pt-2">
-                <Button variant="ghost" className="flex-1 text-gray-600 flex items-center justify-center text-xs">
-                  <Heart className="h-4 w-4 mr-1" /> LIKE
+              {/* Card Footer: Action Buttons */}
+              <div className="flex justify-between border-t border-gray-100">
+                <Button variant="ghost" className="flex-1 text-gray-600 hover:bg-gray-50 flex items-center justify-center text-xs py-3 rounded-none">
+                  <Heart className="h-4 w-4 mr-1.5" /> LIKE
                 </Button>
-                <Button variant="ghost" className="flex-1 text-gray-600 flex items-center justify-center text-xs">
-                  <MessageSquare className="h-4 w-4 mr-1" /> COMMENT
-                </Button>
-                <Button variant="ghost" className="flex-1 text-gray-600 flex items-center justify-center text-xs">
-                  <Repeat2 className="h-4 w-4 mr-1" /> SHARE
+                <Button variant="ghost" className="flex-1 text-gray-600 hover:bg-gray-50 flex items-center justify-center text-xs py-3 border-l border-r border-gray-100 rounded-none">
+                  <MessageSquare className="h-4 w-4 mr-1.5" /> COMMENT
                 </Button>
               </div>
             </div>
           ))}
-        </div>
-
-        {/* Column 3: Recommended Users */}
-        <div className="w-full lg:w-1/3 mt-4 lg:mt-0">
-          <div className="px-4 py-3 bg-gray-100 border-b border-t lg:border-t-0 border-gray-200 rounded-t-md">
-            <h2 className="text-sm font-medium text-gray-700">People You Might Know</h2>
-          </div>
-          <div className="mt-0 bg-white rounded-b-md shadow-sm">
-            {recommendedUsers.map((user, index) => (
-              <div key={index} className="px-4 py-2 flex items-center justify-between border-b border-gray-100 last:border-b-0">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 border">
-                    <img src={user.avatar} alt={`${user.name}'s avatar`} className="rounded-full object-cover h-full w-full"/>
-                  </Avatar>
-                  <div>
-                    <p className="text-sm font-medium text-gray-800">{user.name}</p>
-                    <p className="text-xs text-gray-500">{user.role}</p>
-                  </div>
-                </div>
-                <Button size="sm" className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-full px-3 py-1 text-xs">
-                  CONNECT
-                </Button>
-              </div>
-            ))}
-            <div className="px-4 py-3 text-center border-t border-gray-100">
-              <Button variant="ghost" size="sm" className="text-gray-500 text-xs hover:underline">
-                VIEW MORE →
-              </Button>
-            </div>
-          </div>
         </div>
       </div>
     </div>
