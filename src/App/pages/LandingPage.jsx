@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/button.jsx";
+import Button from "@/components/button.jsx";
 // Remove useState import as it's not needed here anymore
 // import { useState } from "react"; 
 import { Link } from "react-router-dom"; // Keep Link if your Button component uses it internally
@@ -45,8 +45,6 @@ const LandingPage = ({ isLoggedIn }) => {
             <div className="flex gap-4 flex-col sm:flex-row">
               {/* Button to create a report */}
               <Button title={"Buat Laporan"} condition={false} to={"/laporan"} className="px-50"/>
-              {/* You could also add a button to Dashboard if needed */}
-              {/* <Button title={"Lihat Dashboard"} condition={false} to={"/dashboard"} className="px-50"/> */}
             </div>
           </>
         ) : (
@@ -56,8 +54,6 @@ const LandingPage = ({ isLoggedIn }) => {
             <div className="flex gap-4 flex-col sm:flex-row">
               {/* Original Login button */}
               <Button title={"Login"} condition={false} to={"/login"} className="px-50"/>
-              {/* You might also want a Sign Up button here */}
-              {/* <Button title={"Sign Up"} condition={false} to={"/signUp"} className="px-50"/> */}
             </div>
           </>
         )}

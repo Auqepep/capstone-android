@@ -25,7 +25,6 @@ export default function Login() {
                             <p className="mb-2">Remember me?</p>
                         </div>
                         <div className="mr-5">
-                            <Button title="Login" to="/login" className="py-2 px-35 text-sm" condition={true} />
                             <p className="text-end mt-5">Forgot Password?</p>
                         </div>
                         <div>

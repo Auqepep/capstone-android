@@ -2,7 +2,7 @@ import Button from "../../components/button.jsx";
 
 export default function laporan() {
   return (
-    <div className="relative z-10">
+    <div className="justify-items-center">
       <div className="max-w-4xl">
 
         

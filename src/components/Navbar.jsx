@@ -53,7 +53,7 @@ const Navbar = ({ isLoggedIn }) => {
             hover:text-(--btn-secondary) text-sm transition duration-200 ease-in-out">
               Dashboard
             </Link>
-            <Link to="/laporan" className="text-gray-700 
+            <Link to="/laporan-social" className="text-gray-700 
             hover:text-(--btn-secondary) text-sm transition duration-200 ease-in-out">
               Laporan
             </Link>
