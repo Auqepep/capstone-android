@@ -30,7 +30,7 @@ const statusColors = {
   "Dalam Progress": "warning",
   "Fixed": "success",
 };
-
+//
 const initialPostsData = [
   {
     id: "post1",
