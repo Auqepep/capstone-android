@@ -1,4 +1,4 @@
-import Button from "../../components/button.jsx";
+import Button from "../../components/Button.jsx";
 
 export default function laporan() {
   return (

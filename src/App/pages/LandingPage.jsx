@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "@/components/button.jsx";
+import Button from "@/components/Button.jsx";
 // Remove useState import as it's not needed here anymore
 // import { useState } from "react"; 
 import { Link } from "react-router-dom"; // Keep Link if your Button component uses it internally

@@ -31,7 +31,6 @@ const statusColors = {
   "Fixed": "success",
 };
 
-// Initial data for posts with IDs and statuses
 const initialPostsData = [
   {
     id: "post1", // Added unique ID
