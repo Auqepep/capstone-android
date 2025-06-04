@@ -1,12 +1,25 @@
-import { MoreHorizontal, Heart, MessageSquare, Repeat2, Eye, Edit, Search } from "lucide-react"
-import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import placeholder from "@/assets/placeholder.jpg" // Pastikan path ini benar
-import { useState } from "react"
+import {
+  MoreHorizontal,
+  Heart,
+  MessageSquare,
+  Repeat2,
+  Eye,
+  Edit,
+  Search,
+} from "lucide-react";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useState } from "react";
 
 // Sample initial data for posts with commentsList
 const initialPostsData = [
@@ -16,8 +29,8 @@ const initialPostsData = [
     authorAvatar: null,
     time: "4 jam yang lalu",
     location: "Jakarta Creative Hub",
-    description: "Hello everybody! We are preparing a new fresh campaign. Here's a sneak peek :)",
-    image: placeholder,
+    description:
+      "Hello everybody! We are preparing a new fresh campaign. Here's a sneak peek :)",
     likes: 1250,
     shares: 24,
     status: "Dalam progress",
@@ -36,7 +49,6 @@ const initialPostsData = [
     time: "6 jam yang lalu",
     location: "Main Street, Downtown",
     description: "Found this broken sidewalk. Needs immediate attention!",
-    image: placeholder,
     likes: 450,
     shares: 12,
     status: "Belum Jalan",
@@ -52,8 +64,8 @@ const initialPostsData = [
     authorAvatar: null,
     time: "1 hari yang lalu",
     location: "5th Avenue Pothole",
-    description: "The pothole on 5th Avenue has been repaired. Thanks for your quick response!",
-    image: placeholder,
+    description:
+      "The pothole on 5th Avenue has been repaired. Thanks for your quick response!",
     likes: 780,
     shares: 18,
     status: "Fixed",
@@ -88,7 +100,8 @@ function SocialFeed() {
       post.description.toLowerCase().includes(searchTermLower) ||
       post.author.toLowerCase().includes(searchTermLower) ||
       (post.location && post.location.toLowerCase().includes(searchTermLower));
-    const matchesStatus = statusFilter === "all" || post.status === statusFilter;
+    const matchesStatus =
+      statusFilter === "all" || post.status === statusFilter;
     return matchesSearch && matchesStatus;
   });
 
@@ -96,7 +109,11 @@ function SocialFeed() {
     setPostsData((prevPosts) =>
       prevPosts.map((post) => {
         if (post.id === postId) {
-          return { ...post, likes: post.isLiked ? post.likes - 1 : post.likes + 1, isLiked: !post.isLiked };
+          return {
+            ...post,
+            likes: post.isLiked ? post.likes - 1 : post.likes + 1,
+            isLiked: !post.isLiked,
+          };
         }
         return post;
       })
@@ -104,7 +121,9 @@ function SocialFeed() {
   };
 
   const toggleCommentSection = (postId) => {
-    setActiveCommentPostId((currentOpenId) => (currentOpenId === postId ? null : postId));
+    setActiveCommentPostId((currentOpenId) =>
+      currentOpenId === postId ? null : postId
+    );
     setNewCommentText(""); // Reset input field ketika membuka/menutup
   };
 
@@ -172,8 +191,13 @@ function SocialFeed() {
                   <div className="flex justify-between items-start">
                     <div className="flex items-start space-x-3">
                       <Avatar>
-                        <AvatarImage src={post.authorAvatar || "/placeholder-avatar.svg"} alt={post.author} />
-                        <AvatarFallback>{post.author.charAt(0).toUpperCase()}</AvatarFallback>
+                        <AvatarImage
+                          src={post.authorAvatar || "/placeholder-avatar.svg"}
+                          alt={post.author}
+                        />
+                        <AvatarFallback>
+                          {post.author.charAt(0).toUpperCase()}
+                        </AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{post.author}</div>
@@ -199,28 +223,54 @@ function SocialFeed() {
                   <p className="mb-3 text-gray-800">{post.description}</p>
                   {post.image && (
                     <div className="rounded-md overflow-hidden mb-3 border">
-                      <img src={post.image} alt={`Post by ${post.author}`} className="w-full h-auto object-cover" />
+                      <img
+                        src={post.image}
+                        alt={`Post by ${post.author}`}
+                        className="w-full h-auto object-cover"
+                      />
                     </div>
                   )}
                   <div className="flex items-center text-sm text-gray-500 mb-3">
                     <span className="flex items-center mr-4">
-                      <Heart className={`h-4 w-4 mr-1 ${post.isLiked ? "text-red-500 fill-red-500" : ""}`} /> {post.likes} likes
+                      <Heart
+                        className={`h-4 w-4 mr-1 ${
+                          post.isLiked ? "text-red-500 fill-red-500" : ""
+                        }`}
+                      />{" "}
+                      {post.likes} likes
                     </span>
-                    <span className="flex items-center mr-4 cursor-pointer" onClick={() => toggleCommentSection(post.id)}>
-                      <MessageSquare className="h-4 w-4 mr-1" /> {post.commentsList.length} comments
+                    <span
+                      className="flex items-center mr-4 cursor-pointer"
+                      onClick={() => toggleCommentSection(post.id)}
+                    >
+                      <MessageSquare className="h-4 w-4 mr-1" />{" "}
+                      {post.commentsList.length} comments
                     </span>
                   </div>
                   <div className="flex border-t pt-3">
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`flex-1 ${post.isLiked ? 'text-red-500 hover:text-red-600' : 'text-gray-600 hover:text-red-500'}`}
+                      className={`flex-1 ${
+                        post.isLiked
+                          ? "text-red-500 hover:text-red-600"
+                          : "text-gray-600 hover:text-red-500"
+                      }`}
                       onClick={() => handleLike(post.id)}
                     >
-                      <Heart className={`h-4 w-4 mr-2 ${post.isLiked ? 'fill-current' : ''}`} />
-                      {post.isLiked ? 'LIKED' : 'LIKE'}
+                      <Heart
+                        className={`h-4 w-4 mr-2 ${
+                          post.isLiked ? "fill-current" : ""
+                        }`}
+                      />
+                      {post.isLiked ? "LIKED" : "LIKE"}
                     </Button>
-                    <Button variant="ghost" size="sm" className="flex-1 text-gray-600 hover:text-blue-500" onClick={() => toggleCommentSection(post.id)}>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="flex-1 text-gray-600 hover:text-blue-500"
+                      onClick={() => toggleCommentSection(post.id)}
+                    >
                       <MessageSquare className="h-4 w-4 mr-2" /> COMMENT
                     </Button>
                   </div>
@@ -235,25 +285,41 @@ function SocialFeed() {
                         {post.commentsList.length > 0 ? (
                           // Tampilkan N komentar terakhir, atau semua jika kurang dari N+1
                           // Di sini kita balik arraynya agar komentar terbaru di atas, lalu ambil 4 teratas dari yang terbaru
-                          [...post.commentsList].reverse().slice(0, 4).map((comment) => (
-                            <div key={comment.id} className="text-xs bg-gray-100 p-2 rounded-md shadow-sm">
-                              <span className="font-semibold text-gray-700">{comment.user}: </span>
-                              <span className="text-gray-600">{comment.text}</span>
-                            </div>
-                          ))
+                          [...post.commentsList]
+                            .reverse()
+                            .slice(0, 4)
+                            .map((comment) => (
+                              <div
+                                key={comment.id}
+                                className="text-xs bg-gray-100 p-2 rounded-md shadow-sm"
+                              >
+                                <span className="font-semibold text-gray-700">
+                                  {comment.user}:{" "}
+                                </span>
+                                <span className="text-gray-600">
+                                  {comment.text}
+                                </span>
+                              </div>
+                            ))
                         ) : (
-                          <p className="text-xs text-gray-500">No comments yet. Be the first to comment!</p>
+                          <p className="text-xs text-gray-500">
+                            No comments yet. Be the first to comment!
+                          </p>
                         )}
                         {/* Opsi untuk melihat semua komentar jika lebih dari 4 */}
                         {post.commentsList.length > 4 && (
-                           <p className="text-xs text-blue-500 hover:underline cursor-pointer mt-2">
-                             View all {post.commentsList.length - 4} other comments
-                           </p>
+                          <p className="text-xs text-blue-500 hover:underline cursor-pointer mt-2">
+                            View all {post.commentsList.length - 4} other
+                            comments
+                          </p>
                         )}
                       </div>
                       <div className="flex space-x-2 items-center">
-                        <Avatar size="sm" className="w-8 h-8"> {/* Avatar kecil untuk input komentar */}
-                            <AvatarFallback>Y</AvatarFallback> {/* Ganti 'Y' dengan inisial user yang login */}
+                        <Avatar size="sm" className="w-8 h-8">
+                          {" "}
+                          {/* Avatar kecil untuk input komentar */}
+                          <AvatarFallback>Y</AvatarFallback>{" "}
+                          {/* Ganti 'Y' dengan inisial user yang login */}
                         </Avatar>
                         <Input
                           type="text"
@@ -262,13 +328,16 @@ function SocialFeed() {
                           onChange={(e) => setNewCommentText(e.target.value)}
                           className="flex-1 text-sm"
                           onKeyPress={(e) => {
-                            if (e.key === 'Enter' && !e.shiftKey) {
+                            if (e.key === "Enter" && !e.shiftKey) {
                               e.preventDefault(); // Mencegah newline di input jika hanya Enter
                               handleAddComment(post.id);
                             }
                           }}
                         />
-                        <Button onClick={() => handleAddComment(post.id)} size="sm">
+                        <Button
+                          onClick={() => handleAddComment(post.id)}
+                          size="sm"
+                        >
                           Post
                         </Button>
                       </div>

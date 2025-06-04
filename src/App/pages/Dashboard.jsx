@@ -21,7 +21,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import placeholder from "../../assets/placeholder.jpg";
 
 //warna
 const statusOptions = ["Belum Jalan", "Dalam Progress", "Fixed"];
@@ -30,7 +29,7 @@ const statusColors = {
   "Dalam Progress": "warning",
   "Fixed": "success",
 };
-//
+
 const initialPostsData = [
   {
     id: "post1",
@@ -40,7 +39,6 @@ const initialPostsData = [
       time: "14 jam yang lalu"
     },
     content: "Hello everybody! We are preparing a new Fresh campaign. Here's a sneak peek :)",
-    image: placeholder,
     status: "Dalam Progress",
     stats: {
       likes: 1250,
@@ -56,7 +54,6 @@ const initialPostsData = [
       time: "2 days ago"
     },
     content: "lorem ipsum sit dolor amet",
-    image: placeholder,
     status: "Belum Jalan",
     stats: {
       likes: 890,
@@ -72,7 +69,6 @@ const initialPostsData = [
       time: "3 days ago"
     },
     content: "Just fixed the pothole on Main St. #communityservice",
-    image: placeholder,
     status: "Fixed",
     stats: {
       likes: 750,
@@ -89,7 +85,6 @@ const initialPostsData = [
       time: "5 days ago"
     },
     content: "Exploring new design trends for our upcoming project. #designthinking",
-    image: placeholder, // Ganti dengan gambar yang relevan jika ada
     status: "Dalam Progress",
     stats: {
       likes: 920,

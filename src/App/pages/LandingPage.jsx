@@ -1,9 +1,9 @@
 import React from "react";
-import Button from "@/components/Button.jsx";
+import Button from "@/components/button.jsx";
 // Remove useState import as it's not needed here anymore
 // import { useState } from "react"; 
 import { Link } from "react-router-dom"; // Keep Link if your Button component uses it internally
-import imgbuilding from "@/assets/building.svg"; // Adjust the path as necessary
+import imgbuilding from "../../assets/building.svg"; // Adjust the path as necessary
 
 // isLoggedIn prop
 const LandingPage = ({ isLoggedIn }) => {
