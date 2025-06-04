@@ -21,7 +21,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-// Ganti dengan path gambar placeholder yang sesuai
+import placeholder from "@/assets/placeholder.jpg";
 
 //warna
 const statusOptions = ["Belum Jalan", "Dalam Progress", "Fixed"];
