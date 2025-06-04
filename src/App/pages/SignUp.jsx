@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { User, CalendarDays, Mail, Lock } from 'lucide-react';
 import Button from "../../components/Button.jsx";
-import cityIllustration from '@/assets/city2.jpg';
+import cityIllustration from '../../assets/city2.jpg';
 const illustrationUrl = cityIllustration;
 
 export default function SignUp() {

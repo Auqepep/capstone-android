@@ -28,7 +28,7 @@ import SocialFeed from "../App/pages/laporan-social";
 // }
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#F7FBFA]">
@@ -36,7 +36,7 @@ function App() {
       
       <main className="flex-1 p-2 mx-auto w-full">
         <Routes>
-          <Route path="/" element={<LandingPage isLoggedIn={true}/>} />
+          <Route path="/" element={<LandingPage isLoggedIn={false}/>} />
           <Route path="/laporan" element={<Laporan />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
