@@ -1,11 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, AlertCircle } from 'lucide-react'; 
-<<<<<<< Updated upstream
-import Button from "../../components/button.jsx"; 
-=======
-import { Button } from "@/components/ui/button"; 
->>>>>>> Stashed changes
+import { Mail, Lock, AlertCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
 import cityIllustration from '@/assets/city2.jpg';
 const illustrationUrl = cityIllustration;
 
@@ -13,11 +9,6 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
-<<<<<<< Updated upstream
-  const illustrationUrl = cityIllustration;
-=======
->>>>>>> Stashed changes
-
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate(); 

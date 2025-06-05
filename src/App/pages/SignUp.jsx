@@ -1,14 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-<<<<<<< Updated upstream
-import { User, CalendarDays, Mail, Lock } from 'lucide-react';
-import Button from "../../components/button.jsx";
-import cityIllustration from '@/assets/city2.jpg';
-=======
 import { User, CalendarDays, Mail, Lock, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import cityIllustration from '../../assets/city2.jpg';
->>>>>>> Stashed changes
 const illustrationUrl = cityIllustration;
 
 export default function SignUp() {
@@ -89,22 +83,6 @@ export default function SignUp() {
        });
     
        const data = await response.json();
-    
-<<<<<<< Updated upstream
-       if (!response.ok) {
-         throw new Error(data.message || 'Registration failed. Please try again.');
-       }
-    
-       setIsSubmitting(false);
-       alert('Registration successful! Please login.'); 
-       navigate('/login'); 
-    
-     } catch (error) {
-       setErrors({ form: error.message });
-       setIsSubmitting(false);
-     }
-
-=======
         if (!response.ok) {
           setErrors({ form: data.message || data.error || 'Registration failed. Please try again.' });
           setIsSubmitting(false);
@@ -118,7 +96,6 @@ export default function SignUp() {
         setErrors({ form: error.message || 'An unexpected error occurred. Please try again.' });
         setIsSubmitting(false);
       }
->>>>>>> Stashed changes
   };
 
   return (
