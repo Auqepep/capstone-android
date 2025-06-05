@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+<<<<<<< Updated upstream
 import { User, CalendarDays, Mail, Lock } from 'lucide-react';
 import Button from "../../components/button.jsx";
 import cityIllustration from '@/assets/city2.jpg';
+=======
+import { User, CalendarDays, Mail, Lock, AlertCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import cityIllustration from '../../assets/city2.jpg';
+>>>>>>> Stashed changes
 const illustrationUrl = cityIllustration;
 
 export default function SignUp() {
@@ -84,6 +90,7 @@ export default function SignUp() {
     
        const data = await response.json();
     
+<<<<<<< Updated upstream
        if (!response.ok) {
          throw new Error(data.message || 'Registration failed. Please try again.');
        }
@@ -97,6 +104,21 @@ export default function SignUp() {
        setIsSubmitting(false);
      }
 
+=======
+        if (!response.ok) {
+          setErrors({ form: data.message || data.error || 'Registration failed. Please try again.' });
+          setIsSubmitting(false);
+          return; 
+        }
+    
+        alert('Registration successful! Please login.');
+        navigate('/login');
+    
+      } catch (error) {
+        setErrors({ form: error.message || 'An unexpected error occurred. Please try again.' });
+        setIsSubmitting(false);
+      }
+>>>>>>> Stashed changes
   };
 
   return (
@@ -218,9 +240,14 @@ export default function SignUp() {
               <Button
                 title={isSubmitting ? "Signing up..." : "Sign Up"}
                 type="submit"
-                className={`py-3 px-44 text-base w-full font-semibold rounded-lg text-white ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#16423c] hover:bg-[#6a9c89]'}`} 
-                condition={!isSubmitting} 
-              />
+                disabled={isSubmitting}
+                size="lg" 
+                className={`w-full font-semibold rounded-lg ${ 
+                  !isSubmitting ? 'bg-[#16423c] hover:bg-[#6a9c89] text-white' : ''
+                }`}
+              >
+                {isSubmitting ? "Signing up..." : "Sign Up"}
+              </Button>
             </div>
 
             <div className="text-center">

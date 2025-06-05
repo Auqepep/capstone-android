@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, AlertCircle } from 'lucide-react'; 
+<<<<<<< Updated upstream
 import Button from "../../components/button.jsx"; 
+=======
+import { Button } from "@/components/ui/button"; 
+>>>>>>> Stashed changes
 import cityIllustration from '@/assets/city2.jpg';
 const illustrationUrl = cityIllustration;
 
@@ -9,7 +13,10 @@ export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+<<<<<<< Updated upstream
   const illustrationUrl = cityIllustration;
+=======
+>>>>>>> Stashed changes
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -155,11 +162,21 @@ export default function Login() {
 
             <div className="pt-2"> 
               <Button
-                title={isSubmitting ? "Logging in..." : "Login"}
                 type="submit"
-                className={`py-3 px-47 text-base w-full font-semibold rounded-lg text-white ${isSubmitting ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#16423c] hover:bg-[#6a9c89]'}`} 
-                condition={!isSubmitting} 
-              />
+                disabled={isSubmitting}
+                size="lg"
+                className={`w-full font-semibold rounded-lg ${ 
+                  !isSubmitting ? 'bg-[#16423c] hover:bg-[#6a9c89] text-white' : ''
+                }`}
+                >
+                    {isSubmitting ? (
+                  <>
+                    Logging in...
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </Button>
             </div>
 
             <div className="text-center"> 
