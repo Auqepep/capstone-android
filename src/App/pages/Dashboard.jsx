@@ -76,7 +76,7 @@ const initialPostsData = [
       shares: 10
     }
   },
-  // Tambahkan lebih banyak post untuk melihat efek grid dengan baik
+
   {
     id: "post4",
     user: {

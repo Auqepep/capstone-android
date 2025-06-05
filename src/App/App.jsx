@@ -9,24 +9,6 @@ import Dashboard from "../App/pages/Dashboard";
 import SignUp  from "./pages/SignUp"; 
 import SocialFeed from "../App/pages/laporan-social";
 
-
-// function App() {
-
-//   const [isLoggedIn, setIsLoggedIn] = useState(true); 
-
-
-//   return (
-//     <div className="min-h-screen flex flex-col bg-gray-50">
-//       <Navbar isLoggedIn={isLoggedIn} />
-      
-
-//       <main className="flex-1 p-8 max-w-6xl mx-auto w-full">
-//         <LandingPage />
-//       </main>
-//     </div>
-//   );
-// }
-
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
