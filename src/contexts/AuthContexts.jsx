@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Call logout API
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const apiUrl = import.meta.env.API_URL || "http://localhost:3000";
       await fetch(`${apiUrl}/logout`, {
         method: "POST",
         credentials: "include", // Include cookies
@@ -76,4 +76,3 @@ export const AuthProvider = ({ children }) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
-    

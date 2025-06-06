@@ -94,7 +94,7 @@ function SocialDashboard() {
   };
   
   const statusOptions = ["Pending", "On Progress", "Fixed"];
-  
+
   const handleStatusChange = (postId, newStatus) => {
     setPosts(currentPosts =>
       currentPosts.map(post =>
@@ -109,7 +109,7 @@ function SocialDashboard() {
     
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      const apiUrl = import.meta.env.API_URL || 'http://localhost:3000';
       const response = await fetch(`${apiUrl}/posts`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,

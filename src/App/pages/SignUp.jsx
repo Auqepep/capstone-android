@@ -73,7 +73,7 @@ export default function SignUp() {
     console.log("Sign Up data to submit:", userData);
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const apiUrl = import.meta.env.API_URL || "http://localhost:3000";
       const response = await fetch(`${apiUrl}/user/new`, {
         method: "POST",
         headers: {
