@@ -33,7 +33,7 @@ const initialPostsData = [
       "Hello everybody! We are preparing a new fresh campaign. Here's a sneak peek :)",
     likes: 1250,
     shares: 24,
-    status: "Dalam progress",
+    status: "Pending",
     isLiked: false,
     commentsList: [
       { id: "c1-1", user: "Bob", text: "Looks exciting!" },
@@ -51,7 +51,7 @@ const initialPostsData = [
     description: "Found this broken sidewalk. Needs immediate attention!",
     likes: 450,
     shares: 12,
-    status: "Belum Jalan",
+    status: "Diproses",
     isLiked: true,
     commentsList: [
       { id: "c2-1", user: "Frank", text: "Oh no, hope it gets fixed soon." },
@@ -68,7 +68,7 @@ const initialPostsData = [
       "The pothole on 5th Avenue has been repaired. Thanks for your quick response!",
     likes: 780,
     shares: 18,
-    status: "Fixed",
+    status: "Selesai",
     isLiked: false,
     commentsList: [
       { id: "c3-1", user: "Henry", text: "Awesome news!" },

@@ -28,7 +28,7 @@ export default function Login() {
                             <p className="text-end mt-5">Forgot Password?</p>
                         </div>
                         <div>
-                            <p className="text-zinc-500 text-center">Don’t have an Account? 
+                            <p className="text-zinc-500 text-center">Don't have an Account? 
                             <span className="text-black font-bold underline underline-offset-4">
                                 <Link to="/signUp" element={<SignUp />} > Sign Up</Link>
                                 </span>
