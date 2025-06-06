@@ -1,12 +1,12 @@
 import React from "react";
-import Button from "../../components/Button.jsx";
-// Remove useState import as it's not needed here anymore
-// import { useState } from "react"; 
-import { Link } from "react-router-dom"; // Keep Link if your Button component uses it internally
-import imgbuilding from "../../assets/building.svg"; // Adjust the path as necessary
+import Button from "../../components/button.jsx";
+import { useAuth } from "../../contexts/AuthContexts"; // Import useAuth hook
+import imgbuilding from "../../assets/building.svg";
 
-// isLoggedIn prop
-const LandingPage = ({ isLoggedIn }) => {
+const LandingPage = () => {
+  // Use the auth context instead of props
+  const { isLoggedIn, user } = useAuth();
+
   return (
     <div className="relative flex flex-col md:flex-row items-start justify-between container mx-auto px-4 mt-10">
       <div className="w-full md:w-3/5 z-10">
@@ -25,7 +25,6 @@ const LandingPage = ({ isLoggedIn }) => {
             perihal-perihal negatif yang mengganggu day to day anda.
           </p>
         )}
-
 
         <h2 className="text-2xl font-bold mb-4 text-gray-800">
           Tempat Masyarakat Berkumpul dan Berkritis
@@ -63,7 +62,7 @@ const LandingPage = ({ isLoggedIn }) => {
         <img
           src={imgbuilding}
           alt="Background"
-          className="w-100 p-10" // w-100 is likely not a valid Tailwind class, maybe w-full or a fixed size? p-10 is fine.
+          className="w-full max-w-md p-10" // Fixed the className - w-100 isn't valid Tailwind
         />
       </div>
     </div>

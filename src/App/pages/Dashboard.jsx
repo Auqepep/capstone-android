@@ -142,16 +142,6 @@ function SocialDashboard() {
       {/* Container for the main content */}
       <div className="mt-6 px-4 lg:px-2 font-body">
         {/* Quick Actions Bar */}
-        <div className="mb-6 flex justify-center">
-          <Button 
-            onClick={handleCreateReport}
-            className="bg-[#16423c] hover:bg-[#6a9c89] text-white px-8 py-3 text-lg font-semibold shadow-lg transition-all hover:shadow-xl"
-          >
-            <FileText className="h-5 w-5 mr-2" />
-            Submit New Report
-          </Button>
-        </div>
-
         {loading ? (
           <div className="text-center py-8">
             <p className="text-gray-600">Loading posts...</p>
