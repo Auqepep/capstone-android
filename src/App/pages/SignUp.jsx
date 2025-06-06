@@ -73,7 +73,7 @@ export default function SignUp() {
     console.log("Sign Up data to submit:", userData);
 
     try {
-      const apiUrl = import.meta.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
       const response = await fetch(`${apiUrl}/user/new`, {
         method: "POST",
         headers: {
