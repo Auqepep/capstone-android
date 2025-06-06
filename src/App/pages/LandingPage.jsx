@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/button.jsx";
+import Button from "../../components/Button";
 import { useAuth } from "../../contexts/AuthContexts"; // Import useAuth hook
 import imgbuilding from "../../assets/building.svg";
 
@@ -16,7 +16,8 @@ const LandingPage = () => {
 
         {isLoggedIn ? (
           <p className="max-w-xl mb-8 text-gray-700">
-            Senang melihat Anda kembali! Siap membuat laporan perbaikan untuk lingkungan kita?
+            Senang melihat Anda kembali! Siap membuat laporan perbaikan untuk
+            lingkungan kita?
           </p>
         ) : (
           <p className="max-w-xl mb-8 text-gray-700">
@@ -40,24 +41,38 @@ const LandingPage = () => {
         {isLoggedIn ? (
           // Content when logged in
           <>
-            <h3 className="text-xl font-bold mb-6 text-gray-800">Siap membuat laporan baru?</h3>
+            <h3 className="text-xl font-bold mb-6 text-gray-800">
+              Siap membuat laporan baru?
+            </h3>
             <div className="flex gap-4 flex-col sm:flex-row">
               {/* Button to create a report */}
-              <Button title={"Buat Laporan"} condition={false} to={"/laporan"} className="px-50"/>
+              <Button
+                title={"Buat Laporan"}
+                condition={false}
+                to={"/laporan"}
+                className="px-50"
+              />
             </div>
           </>
         ) : (
           // Content when NOT logged in
           <>
-            <h3 className="text-xl font-bold mb-6 text-gray-800">Mau bikin laporan? Lapor diri dulu</h3>
+            <h3 className="text-xl font-bold mb-6 text-gray-800">
+              Mau bikin laporan? Lapor diri dulu
+            </h3>
             <div className="flex gap-4 flex-col sm:flex-row">
               {/* Original Login button */}
-              <Button title={"Login"} condition={false} to={"/login"} className="px-50"/>
+              <Button
+                title={"Login"}
+                condition={false}
+                to={"/login"}
+                className="px-50"
+              />
             </div>
           </>
         )}
       </div>
-      
+
       <div className="w-full md:w-2/5 flex justify-end">
         <img
           src={imgbuilding}
