@@ -6,7 +6,7 @@ import LandingPage from "../App/pages/LandingPage";
 import Laporan from "../App/pages/Laporan";
 import Login from "../App/pages/Login";
 import Dashboard from "../App/pages/Dashboard";
-import SignUp  from "./pages/SignUp"; 
+import SignUp  from "../App/pages/SignUp"; 
 import SocialFeed from "../App/pages/laporan-social";
 
 

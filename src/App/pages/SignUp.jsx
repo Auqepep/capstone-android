@@ -1,70 +1,52 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
-import { User, CalendarDays, Mail, Lock, AlertCircle } from 'lucide-react'; // AlertCircle ditambahkan
-// import Button from "../../components/Button.jsx"; // Komponen kustom dihapus
-import { Button } from "@/components/ui/button"; // Komponen Button Shadcn ditambahkan
-=======
-import { User, CalendarDays, Mail, Lock, AlertCircle } from 'lucide-react';
-import { Button } from "@/components/ui/button";
->>>>>>> origin/login-report
-import cityIllustration from '../../assets/city2.jpg';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { User, CalendarDays, Mail, Lock, AlertCircle } from "lucide-react";
+import { Button } from "../../components/ui/button";
+import cityIllustration from "../../assets/city2.jpg";
 const illustrationUrl = cityIllustration;
 
 export default function SignUp() {
-  const [fullName, setFullName] = useState('');
-<<<<<<< HEAD
-  const [dob, setDob] = useState('');
-=======
-  const [dob, setDob] = useState(''); 
->>>>>>> origin/login-report
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [fullName, setFullName] = useState("");
+  const [dob, setDob] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-<<<<<<< HEAD
   const navigate = useNavigate();
-=======
-  const navigate = useNavigate(); 
->>>>>>> origin/login-report
 
   // Fungsi untuk validasi form
   const validateForm = () => {
     const newErrors = {};
     if (!fullName.trim()) {
-      newErrors.fullName = 'Full name is required.';
-<<<<<<< HEAD
+      newErrors.fullName = "Full name is required.";
     } else if (!/^[a-zA-Z\s]+$/.test(fullName.trim())) {
-=======
-    } else if (!/^[a-zA-Z\s]+$/.test(fullName.trim())) { 
->>>>>>> origin/login-report
-      newErrors.fullName = 'Full name can only contain letters and spaces.';
+      newErrors.fullName = "Full name can only contain letters and spaces.";
     }
 
     if (!dob) {
-      newErrors.dob = 'Date of birth is required.';
+      newErrors.dob = "Date of birth is required.";
     }
-    
 
     if (!email.trim()) {
-      newErrors.email = 'Email is required.';
+      newErrors.email = "Email is required.";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      newErrors.email = 'Email address is invalid.';
+      newErrors.email = "Email address is invalid.";
     }
 
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (!password) {
-      newErrors.password = 'Password is required.';
+      newErrors.password = "Password is required.";
     } else if (!passwordRegex.test(password)) {
-      newErrors.password = 'Password must be at least 8 characters, include uppercase, lowercase, and a number.';
+      newErrors.password =
+        "Password must be at least 8 characters, include uppercase, lowercase, and a number.";
     }
 
     if (!confirmPassword) {
-      newErrors.confirmPassword = 'Confirm password is required.';
+      newErrors.confirmPassword = "Confirm password is required.";
     } else if (password && confirmPassword !== password) {
-      newErrors.confirmPassword = 'Passwords do not match.';
+      newErrors.confirmPassword = "Passwords do not match.";
     }
 
     setErrors(newErrors);
@@ -74,84 +56,53 @@ export default function SignUp() {
   // Fungsi untuk submit form
   const handleSubmit = async (event) => {
     event.preventDefault();
-<<<<<<< HEAD
-    setErrors({}); // Reset specific field errors, form error will be set in catch
-
-    if (!validateForm()) {
-      setIsSubmitting(false); // Pastikan diset false jika validasi gagal
-=======
     setErrors({});
 
     if (!validateForm()) {
       setIsSubmitting(false);
->>>>>>> origin/login-report
       return;
     }
 
     setIsSubmitting(true);
     const userData = {
       user_name: fullName,
-<<<<<<< HEAD
       user_birthday: dob,
-=======
-      user_birthday: dob, 
->>>>>>> origin/login-report
       user_email: email,
       user_password: password,
     };
-    console.log('Sign Up data to submit:', userData);
+    console.log("Sign Up data to submit:", userData);
 
-<<<<<<< HEAD
-      try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-        const response = await fetch(`${apiUrl}/user/new`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(userData),
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const response = await fetch(`${apiUrl}/user/new`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const data = await response.json();
+      if (!response.ok) {
+        setErrors({
+          form:
+            data.message ||
+            data.error ||
+            "Registration failed. Please try again.",
         });
-    
-        const data = await response.json();
-    
-        if (!response.ok) {
-          // Set error ke errors.form jika ada pesan dari server, atau error umum
-          setErrors({ form: data.message || data.error || 'Registration failed. Please try again.' });
-          setIsSubmitting(false); // Pastikan diset false jika ada error
-          return; // Hentikan eksekusi lebih lanjut
-        }
-    
-        // Tidak perlu set isSubmitting false di sini karena akan navigasi
-=======
-     try {
-       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-       const response = await fetch(`${apiUrl}/user/new`, { 
-         method: 'POST',
-         headers: {
-           'Content-Type': 'application/json',
-         },
-         body: JSON.stringify(userData),
-       });
-    
-       const data = await response.json();
-        if (!response.ok) {
-          setErrors({ form: data.message || data.error || 'Registration failed. Please try again.' });
-          setIsSubmitting(false);
-          return; 
-        }
-    
->>>>>>> origin/login-report
-        alert('Registration successful! Please login.');
-        navigate('/login');
-    
-      } catch (error) {
-<<<<<<< HEAD
-        // Tangani error jaringan atau error tak terduga lainnya
-=======
->>>>>>> origin/login-report
-        setErrors({ form: error.message || 'An unexpected error occurred. Please try again.' });
         setIsSubmitting(false);
+        return;
       }
+
+      alert("Registration successful! Please login.");
+      navigate("/login");
+    } catch (error) {
+      setErrors({
+        form:
+          error.message || "An unexpected error occurred. Please try again.",
+      });
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -159,11 +110,7 @@ export default function SignUp() {
       <div className="flex flex-col md:flex-row w-full max-w-4xl lg:max-w-5xl bg-white shadow-2xl rounded-xl overflow-hidden">
         <div className="hidden md:flex md:w-1/2 overflow-hidden">
           <img
-<<<<<<< HEAD
             src={illustrationUrl}
-=======
-            src={illustrationUrl} 
->>>>>>> origin/login-report
             alt="Sign Up Illustration"
             className="w-full h-full object-cover"
           />
@@ -172,7 +119,9 @@ export default function SignUp() {
         <div className="w-full md:w-1/2 p-8 sm:p-10 lg:p-12">
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div>
-              <h1 className="font-bold text-3xl tracking-wide text-gray-800 mb-6">SIGN UP</h1>
+              <h1 className="font-bold text-3xl tracking-wide text-gray-800 mb-6">
+                SIGN UP
+              </h1>
             </div>
 
             {errors.form && (
@@ -184,118 +133,156 @@ export default function SignUp() {
 
             <div className="space-y-4">
               <div>
-                <label className="block text-zinc-600 font-semibold text-sm mb-1.5" htmlFor="fullName">
+                <label
+                  className="block text-zinc-600 font-semibold text-sm mb-1.5"
+                  htmlFor="fullName"
+                >
                   Full Name
                 </label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   <input
                     id="fullName"
-                    className={`shadow-sm appearance-none border ${errors.fullName ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-300'} rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
+                    className={`shadow-sm appearance-none border ${
+                      errors.fullName
+                        ? "border-red-500 ring-1 ring-red-500"
+                        : "border-gray-300"
+                    } rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
                     type="text"
                     placeholder="Enter your Full Name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                   />
                 </div>
-                {errors.fullName && <p className="text-red-600 text-xs mt-1.5">{errors.fullName}</p>}
+                {errors.fullName && (
+                  <p className="text-red-600 text-xs mt-1.5">
+                    {errors.fullName}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-semibold text-sm mb-1.5" htmlFor="dob">
+                <label
+                  className="block text-zinc-600 font-semibold text-sm mb-1.5"
+                  htmlFor="dob"
+                >
                   Date of Birth
                 </label>
                 <div className="relative">
                   <CalendarDays className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   <input
                     id="dob"
-                    className={`shadow-sm appearance-none border ${errors.dob ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-300'} rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
-<<<<<<< HEAD
+                    className={`shadow-sm appearance-none border ${
+                      errors.dob
+                        ? "border-red-500 ring-1 ring-red-500"
+                        : "border-gray-300"
+                    } rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
                     type="date"
-=======
-                    type="date" 
->>>>>>> origin/login-report
                     value={dob}
                     onChange={(e) => setDob(e.target.value)}
                   />
                 </div>
-                {errors.dob && <p className="text-red-600 text-xs mt-1.5">{errors.dob}</p>}
+                {errors.dob && (
+                  <p className="text-red-600 text-xs mt-1.5">{errors.dob}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-semibold text-sm mb-1.5" htmlFor="email-signup">
+                <label
+                  className="block text-zinc-600 font-semibold text-sm mb-1.5"
+                  htmlFor="email-signup"
+                >
                   Email
                 </label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   <input
                     id="email-signup"
-                    className={`shadow-sm appearance-none border ${errors.email ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-300'} rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
+                    className={`shadow-sm appearance-none border ${
+                      errors.email
+                        ? "border-red-500 ring-1 ring-red-500"
+                        : "border-gray-300"
+                    } rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
                     type="email"
                     placeholder="Enter your Email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
-                {errors.email && <p className="text-red-600 text-xs mt-1.5">{errors.email}</p>}
+                {errors.email && (
+                  <p className="text-red-600 text-xs mt-1.5">{errors.email}</p>
+                )}
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-semibold text-sm mb-1.5" htmlFor="password-signup">
+                <label
+                  className="block text-zinc-600 font-semibold text-sm mb-1.5"
+                  htmlFor="password-signup"
+                >
                   Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   <input
                     id="password-signup"
-                    className={`shadow-sm appearance-none border ${errors.password ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-300'} rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
+                    className={`shadow-sm appearance-none border ${
+                      errors.password
+                        ? "border-red-500 ring-1 ring-red-500"
+                        : "border-gray-300"
+                    } rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
                     type="password"
                     placeholder="Enter your Password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
-                {errors.password && <p className="text-red-600 text-xs mt-1.5">{errors.password}</p>}
+                {errors.password && (
+                  <p className="text-red-600 text-xs mt-1.5">
+                    {errors.password}
+                  </p>
+                )}
               </div>
 
               <div>
-                <label className="block text-zinc-600 font-semibold text-sm mb-1.5" htmlFor="confirmPassword">
+                <label
+                  className="block text-zinc-600 font-semibold text-sm mb-1.5"
+                  htmlFor="confirmPassword"
+                >
                   Confirm Password
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 pointer-events-none" />
                   <input
                     id="confirmPassword"
-                    className={`shadow-sm appearance-none border ${errors.confirmPassword ? 'border-red-500 ring-1 ring-red-500' : 'border-gray-300'} rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
+                    className={`shadow-sm appearance-none border ${
+                      errors.confirmPassword
+                        ? "border-red-500 ring-1 ring-red-500"
+                        : "border-gray-300"
+                    } rounded-lg w-full py-3 pl-10 pr-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-[#6a9c89] focus:border-transparent placeholder:text-gray-400 transition-colors`}
                     type="password"
                     placeholder="Confirm your Password"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                   />
                 </div>
-                {errors.confirmPassword && <p className="text-red-600 text-xs mt-1.5">{errors.confirmPassword}</p>}
+                {errors.confirmPassword && (
+                  <p className="text-red-600 text-xs mt-1.5">
+                    {errors.confirmPassword}
+                  </p>
+                )}
               </div>
             </div>
 
-<<<<<<< HEAD
             <div className="pt-4">
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                size="lg" // Menggunakan size="lg" dari Shadcn untuk tinggi dan padding yang sesuai (mirip py-3)
-                className={`w-full font-semibold rounded-lg ${ // rounded-lg untuk konsistensi jika diinginkan, size="lg" biasanya rounded-md
-                  !isSubmitting ? 'bg-[#16423c] hover:bg-[#6a9c89] text-white' : ''
-                  // Style disabled (bg-gray-400 cursor-not-allowed) akan ditangani otomatis oleh Shadcn Button saat 'disabled' true
-=======
-            <div className="pt-4"> 
               <Button
                 title={isSubmitting ? "Signing up..." : "Sign Up"}
                 type="submit"
                 disabled={isSubmitting}
-                size="lg" 
-                className={`w-full font-semibold rounded-lg ${ 
-                  !isSubmitting ? 'bg-[#16423c] hover:bg-[#6a9c89] text-white' : ''
->>>>>>> origin/login-report
+                size="lg"
+                className={`w-full font-semibold rounded-lg ${
+                  !isSubmitting
+                    ? "bg-[#16423c] hover:bg-[#6a9c89] text-white"
+                    : ""
                 }`}
               >
                 {isSubmitting ? "Signing up..." : "Sign Up"}
@@ -304,12 +291,11 @@ export default function SignUp() {
 
             <div className="text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{' '}
-<<<<<<< HEAD
-                <Link to="/login" className="font-semibold text-[#16423c] hover:text-[#6a9c89] hover:underline">
-=======
-                <Link to="/login" className="font-semibold text-[#16423c] hover:text-[#6a9c89] hover:underline"> 
->>>>>>> origin/login-report
+                Already have an account?{" "}
+                <Link
+                  to="/login"
+                  className="font-semibold text-[#16423c] hover:text-[#6a9c89] hover:underline"
+                >
                   Login
                 </Link>
               </p>
