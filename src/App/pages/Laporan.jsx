@@ -77,6 +77,9 @@ export default function LaporanPage() {
       submitData.append("location", formData.location);
       submitData.append("status", "PENDING");
 
+      // Note: userId will be extracted from JWT token by backend
+      // No need to send userId in form data
+
       if (formData.image) {
         submitData.append("image", formData.image);
       }
@@ -88,40 +91,36 @@ export default function LaporanPage() {
       }
 
       const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      console.log("Submitting to:", `${apiUrl}/report`); // Debug log
 
-      // Updated API endpoint with /api prefix
-      const endpoint = `${apiUrl}/api/report`;
-      console.log("Submitting to:", endpoint);
-
-      const response = await fetch(endpoint, {
+      const response = await fetch(`${apiUrl}/report`, {
         method: "POST",
+        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
-          // Don't set Content-Type for FormData, let browser set it with boundary
         },
         body: submitData,
       });
 
       // Check if response is ok before trying to parse JSON
       if (!response.ok) {
+        // Try to get error message from response
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         try {
           const errorData = await response.json();
           errorMessage = errorData.message || errorData.error || errorMessage;
         } catch (jsonError) {
+          // If JSON parsing fails, use the HTTP status message
           console.warn("Could not parse error response as JSON:", jsonError);
         }
         throw new Error(errorMessage);
       }
 
       const result = await response.json();
-      console.log("Success response:", result);
 
       setMessage({
         type: "success",
-        text:
-          result.message ||
-          "Report submitted successfully! It will be reviewed by our team.",
+        text: "Report submitted successfully! It will be reviewed by our team.",
       });
 
       // Reset form
@@ -148,16 +147,12 @@ export default function LaporanPage() {
 
       if (error.message.includes("Failed to fetch")) {
         errorMessage =
-          "Connection failed. Please check if the server is running and try again.";
+          "Connection failed. Please check if the server is running and CORS is configured properly.";
       } else if (error.message.includes("CORS")) {
-        errorMessage = "CORS policy error. Please contact the administrator.";
+        errorMessage =
+          "CORS policy error. Please contact the administrator to configure server permissions.";
       } else if (error.message.includes("NetworkError")) {
         errorMessage = "Network error. Please check your internet connection.";
-      } else if (error.message.includes("401")) {
-        errorMessage = "Authentication failed. Please log in again.";
-        // Optionally redirect to login
-        localStorage.removeItem("token");
-        navigate("/login");
       } else if (error.message) {
         errorMessage = error.message;
       }
