@@ -45,7 +45,7 @@ export default function Login() {
     console.log("Login data to submit:", { email, password });
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/user/login`, {
         method: "POST",
         headers: {

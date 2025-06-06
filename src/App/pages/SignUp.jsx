@@ -58,6 +58,7 @@ export default function SignUp() {
     event.preventDefault();
     setErrors({});
 
+
     if (!validateForm()) {
       setIsSubmitting(false);
       return;
@@ -69,17 +70,24 @@ export default function SignUp() {
       user_birthday: dob,
       user_email: email,
       user_password: password,
+      isLoginAfterRegister: true
     };
     console.log("Sign Up data to submit:", userData);
 
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/user/new`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(userData),
+        body: JSON.stringify({
+          user_name: fullName,
+          user_birthday: dob,
+          user_email: email,
+          user_password: password,
+          isLoginAfterRegister: true
+        }),
       });
 
       const data = await response.json();
@@ -104,7 +112,7 @@ export default function SignUp() {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br selection:text-white">
       <div className="flex flex-col md:flex-row w-full max-w-4xl lg:max-w-5xl bg-white shadow-2xl rounded-xl overflow-hidden">
