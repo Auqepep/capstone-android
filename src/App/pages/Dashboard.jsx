@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Check,
   MoreHorizontal,
   Heart,
   MessageSquare,
   Edit,
-  ChevronDown
+  ChevronDown,
+  Plus,
+  FileText
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import { Avatar } from "../../components/ui/avatar";
@@ -18,82 +21,20 @@ import {
 } from "../../components/ui/dropdown-menu";
 import { useAuth } from "../../contexts/AuthContexts";
 
-
-// Sample posts - in real app, fetch from API
-const initialPostsData = [
-  {
-    id: "post1",
-    user: {
-      name: "Ann Louis",
-      avatar: "/api/placeholder/32/32",
-      time: "14 jam yang lalu"
-    },
-    content: "Hello everybody! We are preparing a new Fresh campaign. Here's a sneak peek :)",
-    status: "Dalam Progress",
-    stats: {
-      likes: 1250,
-      comments: 87,
-      shares: 24
-    }
-  },
-  {
-    id: "post2",
-    user: {
-      name: "Ann Louis",
-      avatar: "/api/placeholder/32/32",
-      time: "2 days ago"
-    },
-    content: "lorem ipsum sit dolor amet",
-    status: "Belum Jalan",
-    stats: {
-      likes: 890,
-      comments: 55,
-      shares: 15
-    }
-  },
-  {
-    id: "post3",
-    user: {
-      name: "John Doe",
-      avatar: "/api/placeholder/32/32",
-      time: "3 days ago"
-    },
-    content: "Just fixed the pothole on Main St. #communityservice",
-    status: "Fixed",
-    stats: {
-      likes: 750,
-      comments: 40,
-      shares: 10
-    }
-  },
-  {
-    id: "post4",
-    user: {
-      name: "Jane Smith",
-      avatar: "/api/placeholder/32/32",
-      time: "5 days ago"
-    },
-    content: "Exploring new design trends for our upcoming project. #designthinking",
-    status: "Dalam Progress",
-    stats: {
-      likes: 920,
-      comments: 65,
-      shares: 20
-    }
-  }
-];
-
 function SocialDashboard() {
   const { user, isLoggedIn } = useAuth();
-  const [posts, setPosts] = useState(initialPostsData);
+  const navigate = useNavigate();
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const statusColors = {
-    "Dalam Progress": "default",
-    "Belum Jalan": "secondary",
-    "Fixed": "success",
-  };
   
   const statusOptions = ["Pending", "On Progress", "Fixed"];
+  
+  // Status color mapping
+  const statusColors = {
+    "Pending": "destructive",
+    "On Progress": "secondary", 
+    "Fixed": "default"
+  };
 
   const handleStatusChange = (postId, newStatus) => {
     setPosts(currentPosts =>
@@ -103,13 +44,18 @@ function SocialDashboard() {
     );
   };
 
+  // Navigate to Laporan page
+  const handleCreateReport = () => {
+    navigate('/laporan');
+  };
+
   // Fetch user posts from API (optional)
   const fetchUserPosts = async () => {
     if (!user) return;
     
     setLoading(true);
     try {
-      const apiUrl = import.meta.env.API_URL || 'http://localhost:3000';
+      const apiUrl = import.meta.env.VITE_API_URL;
       const response = await fetch(`${apiUrl}/posts`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('token')}`,
@@ -159,33 +105,53 @@ function SocialDashboard() {
     name: user?.user_name || "Unknown User",
     avatar: user?.user_profile ? `http://localhost:3000/${user.user_profile}` : "/api/placeholder/80/80",
     role: user?.role?.role_name || "User",
-    email: user?.user_email || "",
-    connections: 145 // This could come from API
+    email: user?.user_email || ""
   };
 
   return (
     <div className="max-w-screen-xl mx-auto bg-[#F7FBFA] pb-6 min-h-screen">
       {/* Profile Card */}
       <div className="bg-[#16423c] text-white p-5 border-b shadow-sm rounded-t-2xl">
-        <div className="flex items-center gap-6 font-header">
-          <Avatar className="h-20 w-20 border-2 border-white">
-            <img 
-              src={profileData.avatar} 
-              alt={`${profileData.name}'s profile avatar`} 
-              className="rounded-full object-cover h-full w-full" 
-            />
-          </Avatar>
-          <div>
-            <h2 className="text-2xl font-bold">{profileData.name}</h2>
-            <p className="text-sm mt-1 opacity-90">{profileData.email}</p>
-            <p className="text-sm mt-1 capitalize">Role: {profileData.role}</p>
-            <p className="text-xs mt-2">{profileData.connections} connections</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-6 font-header">
+            <Avatar className="h-20 w-20 border-2 border-white">
+              <img 
+                src={profileData.avatar} 
+                alt={`${profileData.name}'s profile avatar`} 
+                className="rounded-full object-cover h-full w-full" 
+              />
+            </Avatar>
+            <div>
+              <h2 className="text-2xl font-bold">{profileData.name}</h2>
+              <p className="text-sm mt-1 opacity-90">{profileData.email}</p>
+              <p className="text-sm mt-1 capitalize">Role: {profileData.role}</p>
+            </div>
           </div>
+          
+          {/* Create Report Button */}
+          <Button 
+            onClick={handleCreateReport}
+            className="bg-white text-[#16423c] hover:bg-gray-100 font-semibold px-6 py-2 transition-colors"
+          >
+            <Plus className="h-4 w-4 mr-2" />
+            Create Report
+          </Button>
         </div>
       </div>
 
       {/* Container for the main content */}
       <div className="mt-6 px-4 lg:px-2 font-body">
+        {/* Quick Actions Bar */}
+        <div className="mb-6 flex justify-center">
+          <Button 
+            onClick={handleCreateReport}
+            className="bg-[#16423c] hover:bg-[#6a9c89] text-white px-8 py-3 text-lg font-semibold shadow-lg transition-all hover:shadow-xl"
+          >
+            <FileText className="h-5 w-5 mr-2" />
+            Submit New Report
+          </Button>
+        </div>
+
         {loading ? (
           <div className="text-center py-8">
             <p className="text-gray-600">Loading posts...</p>

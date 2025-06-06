@@ -1,192 +1,297 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-// Assuming you have a standard Button component, not one with a 'to' prop for form submission
-// import Button from "../../components/ui/button"; // Example path for a UI library button
+import { useState, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { Button } from "../../components/ui/Button"
+import { Input } from "../../components/ui/input"
+import { Textarea } from "../../components/ui/Textarea"
+import { Label } from "../../components/ui/Label"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card"
+import { Alert, AlertDescription } from "../../components/ui/Alert"
+import { Loader2, Upload, CheckCircle, AlertCircle } from "../../components/ui/icons/Icons"
+import { useAuth } from "@/contexts/AuthContexts"
 
-export default function Laporan() {
-  // State for form fields
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [location, setLocation] = useState("");
-  const [file, setFile] = useState(null); // To hold the selected file
+export default function LaporanPage() {
+  const navigate = useNavigate()
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [message, setMessage] = useState(null)
 
-  // State for submission status and messages
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    location: "",
+    image: null,
+  })
+  
+  // Use AuthContext for authentication
+  const { user: authUser, isLoggedIn, loading: authLoading } = useAuth()
 
-  const navigate = useNavigate();
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }))
+  }
 
-  // Handler for file input changes
   const handleFileChange = (e) => {
-    // Backend uses upload.single(), so we only take the first file
-    setFile(e.target.files[0]);
-  };
+    const file = e.target.files?.[0] || null
+    setFormData((prev) => ({
+      ...prev,
+      image: file,
+    }))
+  }
 
-  // Main function to handle form submission
-  const handleSubmit = async (event) => {
-    event.preventDefault(); // Prevent default browser submission
-    setIsSubmitting(true);
-    setError(null);
-    setSuccessMessage("");
+  const handleSubmit = async (e) => {
+    e.preventDefault()
 
-    // --- Create FormData to send multipart data ---
-    // This is required because you are uploading a file
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    formData.append("location", location);
-    
-    // The field name 'image' MUST match what's in your backend route: upload.single('image')
-    if (file) {
-      formData.append("image", file);
+    // Check authentication
+    if (!isLoggedIn || !authUser) {
+      setMessage({ type: "error", text: "You must be logged in to submit a report." })
+      return
     }
-    
-    // FIXME: Get the actual user ID from your auth context, localStorage, etc.
-    // Your backend's createReport function expects a 'userId'.
-    const userId = localStorage.getItem("userId"); // Example: retrieving from local storage
-    if (userId) {
-      formData.append("userId", userId);
-    } else {
-      setError("You must be logged in to submit a report.");
-      setIsSubmitting(false);
-      return;
+
+    // Validate required fields
+    if (!formData.title || !formData.description || !formData.location) {
+      setMessage({ type: "error", text: "Please fill in all required fields." })
+      return
     }
+
+    setIsSubmitting(true)
+    setMessage(null)
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL;
-      const response = await fetch(`${apiUrl}/report`, {
-        method: "POST",
-        // DO NOT set 'Content-Type': 'multipart/form-data'.
-        // The browser sets it automatically with the correct boundary when using FormData.
-        body: formData,
-      });
+      const submitData = new FormData()
+      submitData.append("title", formData.title)
+      submitData.append("description", formData.description)
+      submitData.append("location", formData.location)
+      submitData.append("status", "PENDING")
+      
+      // Note: userId will be extracted from JWT token by backend
+      // No need to send userId in form data
 
-      const data = await response.json();
+      if (formData.image) {
+        submitData.append("image", formData.image)
+      }
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to submit the report.");
+      // Get token from localStorage
+      const token = localStorage.getItem("token")
+      if (!token) {
+        throw new Error("Authentication token not found")
       }
       
-      setSuccessMessage("Report submitted successfully! Thank you.");
-      // Reset form
-      setTitle("");
-      setDescription("");
-      setLocation("");
-      setFile(null);
-      event.target.reset(); // Clears the file input
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/report`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+        body: submitData,
+      })
 
-    } catch (err) {
-      setError(err.message);
+      const result = await response.json()
+
+      if (response.ok) {
+        setMessage({ 
+          type: "success", 
+          text: "Report submitted successfully! It will be reviewed by our team." 
+        })
+        // Reset form
+        setFormData({
+          title: "",
+          description: "",
+          location: "",
+          image: null,
+        })
+        // Reset file input
+        const fileInput = document.getElementById("file")
+        if (fileInput) fileInput.value = ""
+      } else {
+        console.error("Submit failed:", result)
+        setMessage({ 
+          type: "error", 
+          text: result.message || result.error || "Failed to submit report." 
+        })
+      }
+    } catch (error) {
+      console.error("Submit error:", error)
+      setMessage({ 
+        type: "error", 
+        text: error.message || "An error occurred while submitting the report." 
+      })
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
+
+  const handleLogin = () => {
+    navigate("/login")
+  }
+
+  // Show loading spinner while auth is loading
+  if (authLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <Loader2 className="h-8 w-8 animate-spin" />
+      </div>
+    )
+  }
 
   return (
-    // Centered layout for the page
-    <div className="flex flex-col items-center p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-4xl">
-        {/* How-to Guide */}
-        <div className="bg-white p-6 rounded-lg shadow-lg mb-8 text-gray-800">
-            {/* ... (your how-to guide JSX remains the same) ... */}
-        </div>
+    <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {/* Instructions Section */}
+      <Card className="mb-8">
+        <CardHeader>
+          <CardTitle className="text-3xl text-[#6a9c89]">How to Submit a Report</CardTitle>
+          <CardDescription className="text-lg">Follow these steps to report damaged infrastructure:</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {[
+              'Enter the report title, such as "Pothole on Ponlab Street".',
+              'Provide a description of the issue, for example: "The pothole is quite deep and dangerous for motorcyclists".',
+              "Enter the location where the issue was found.",
+              "Upload photos showing the condition of the infrastructure.",
+              'After completing the form, click the "Submit" button to send your report.',
+            ].map((step, index) => (
+              <div key={index} className="flex items-center space-x-3">
+                <div className="w-3 h-3 bg-[#6a9c89] rounded-full flex-shrink-0"></div>
+                <p className="text-gray-600 font-medium">{step}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-6 text-gray-600">
+            Your report will be verified and forwarded to the relevant authorities for prompt action.
+          </p>
+        </CardContent>
+      </Card>
 
-        <h2 className="text-3xl font-semibold mb-4 text-gray-700">
-          Want to make a report?
-        </h2>
-        <p className="max-w-xl mb-8 text-gray-700 text-lg">
-          Please fill out the form below:
-        </p>
+      {/* Authentication Check */}
+      {!isLoggedIn || !authUser ? (
+        <Card className="mb-8">
+          <CardContent className="pt-6">
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                You must be logged in to submit a report.
+                <Button variant="link" className="p-0 ml-2 h-auto font-semibold text-[#6a9c89]" onClick={handleLogin}>
+                  Login here
+                </Button>
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="mb-4">
+          <CardContent className="pt-6">
+            <Alert>
+              <CheckCircle className="h-4 w-4" />
+              <AlertDescription>
+                Logged in as: <strong>{authUser?.user_name || authUser?.name || 'Unknown'}</strong> 
+                ({authUser?.user_email || authUser?.email || 'Unknown'})
+              </AlertDescription>
+            </Alert>
+          </CardContent>
+        </Card>
+      )}
 
-        {/* --- Form Section --- */}
-        <div className="bg-white p-6 rounded-lg shadow-lg">
-          <form className="space-y-4" onSubmit={handleSubmit}>
-            {/* Report Title */}
+      {/* Report Form */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-3xl text-gray-700">Want to make a report?</CardTitle>
+          <CardDescription className="text-lg">Please fill out the form below:</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {message && (
+            <Alert className={`mb-6 ${message.type === "error" ? "border-red-500" : "border-green-500"}`}>
+              {message.type === "error" ? <AlertCircle className="h-4 w-4" /> : <CheckCircle className="h-4 w-4" />}
+              <AlertDescription className={message.type === "error" ? "text-red-700" : "text-green-700"}>
+                {message.text}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-600">Report Title</label>
-              <input
-                type="text"
+              <Label htmlFor="title">Report Title *</Label>
+              <Input
                 id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Pothole on Ponlab Street"
-                className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6a9c89]"
-                required
-              />
-            </div>
-
-            {/* Description */}
-            <div>
-              <label htmlFor="description" className="block text-sm font-medium text-gray-600">Description</label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                placeholder="Describe the issue in detail"
-                onInput={(e) => {
-                  e.target.style.height = "auto";
-                  e.target.style.height = `${e.target.scrollHeight}px`;
-                }}
-                className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md overflow-hidden resize-none focus:outline-none focus:ring-2 focus:ring-[#6a9c89]"
-                required
-              ></textarea>
-            </div>
-
-            {/* Location */}
-            <div>
-              <label htmlFor="location" className="block text-sm font-medium text-gray-600">Location</label>
-              <input
+                name="title"
                 type="text"
-                id="location"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="e.g., In front of the Indomaret on Main Street"
-                className="mt-2 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#6a9c89]"
+                placeholder="Enter report title"
+                value={formData.title}
+                onChange={handleInputChange}
+                disabled={!isLoggedIn || !authUser || isSubmitting}
+                className="mt-2 focus:ring-[#6a9c89] focus:border-[#6a9c89]"
                 required
               />
             </div>
-            
-            {/* File Upload */}
+
             <div>
-              <label htmlFor="file" className="block text-sm font-medium text-gray-600">Upload Image or Video</label>
-              <input
-                type="file"
-                id="file"
-                onChange={handleFileChange}
-                // Allow both image and video files
-                accept="image/jpeg, image/png, image/gif, video/mp4, video/webm"
-                // Your backend uses upload.single(), so do not allow multiple files
-                // multiple={false} is the default, so it's not needed
-                className="mt-2 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#e0f0e9] file:text-[#16423c] hover:file:bg-[#c8e2d8]"
+              <Label htmlFor="description">Description *</Label>
+              <Textarea
+                id="description"
+                name="description"
+                placeholder="Enter report description"
+                value={formData.description}
+                onChange={handleInputChange}
+                disabled={!isLoggedIn || !authUser || isSubmitting}
+                className="mt-2 min-h-[100px] focus:ring-[#6a9c89] focus:border-[#6a9c89]"
+                required
               />
             </div>
 
-            {/* --- Messages for Error and Success --- */}
-            {error && (
-                <div className="p-3 bg-red-100 border border-red-300 text-red-700 rounded-md text-sm">
-                    <strong>Error:</strong> {error}
-                </div>
-            )}
-            {successMessage && (
-                <div className="p-3 bg-green-100 border border-green-300 text-green-700 rounded-md text-sm">
-                    {successMessage}
-                </div>
-            )}
+            <div>
+              <Label htmlFor="location">Location *</Label>
+              <Input
+                id="location"
+                name="location"
+                type="text"
+                placeholder="Enter report location"
+                value={formData.location}
+                onChange={handleInputChange}
+                disabled={!isLoggedIn || !authUser || isSubmitting}
+                className="mt-2 focus:ring-[#6a9c89] focus:border-[#6a9c89]"
+                required
+              />
+            </div>
 
-            {/* Submit Button */}
+            <div>
+              <Label htmlFor="file">Upload Images</Label>
+              <div className="mt-2">
+                <Input
+                  id="file"
+                  name="file"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  disabled={!isLoggedIn || !authUser || isSubmitting}
+                  className="file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#6a9c89] file:text-white hover:file:bg-[#5a8c79]"
+                />
+                {formData.image && <p className="text-sm text-gray-600 mt-2">Selected: {formData.image.name}</p>}
+              </div>
+            </div>
+
             <div className="pt-4">
-              <button
+              <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full font-semibold rounded-lg text-white py-3 px-4 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed bg-[#16423c] hover:bg-[#6a9c89]"
+                disabled={!isLoggedIn || !authUser || isSubmitting}
+                className="w-full bg-[#6a9c89] hover:bg-[#5a8c79] text-white py-3 text-lg"
               >
-                {isSubmitting ? "Submitting..." : "Submit Report"}
-              </button>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Submitting...
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Submit Report
+                  </>
+                )}
+              </Button>
             </div>
           </form>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
-  );
+  )
 }
