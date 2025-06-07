@@ -22,7 +22,7 @@ import {
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu";
 import { Input } from "../../components/ui/input";
-import { Textarea } from "../../components/ui/textarea";
+import { Textarea } from "../../components/ui/Textarea";
 import { useAuth } from "../../contexts/AuthContexts";
 
 function SocialDashboard() {
