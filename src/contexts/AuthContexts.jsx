@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     try {
       // Call logout API
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+      const apiUrl = import.meta.env.VITE_API_URL;
       await fetch(`${apiUrl}/logout`, {
         method: "POST",
         credentials: "include", // Include cookies
