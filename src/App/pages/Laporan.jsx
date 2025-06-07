@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+//file Laporan_jsx (modified section)
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
@@ -30,6 +31,11 @@ export default function LaporanPage() {
   // Use AuthContext for authentication
   const { user: authUser, isLoggedIn, loading: authLoading } = useAuth();
 
+  // This console.log showed us the structure of authUser
+  console.log("Current authUser:", authUser);
+  console.log("Is logged in:", isLoggedIn);
+  console.log("Auth loading:", authLoading);
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -59,7 +65,11 @@ export default function LaporanPage() {
     }
 
     // Validate required fields
-    if (!formData.title || !formData.description || !formData.location) {
+    if (
+      !formData.title.trim() ||
+      !formData.description.trim() ||
+      !formData.location.trim()
+    ) {
       setMessage({
         type: "error",
         text: "Please fill in all required fields.",
@@ -72,51 +82,83 @@ export default function LaporanPage() {
 
     try {
       const submitData = new FormData();
-      submitData.append("title", formData.title);
-      submitData.append("description", formData.description);
-      submitData.append("location", formData.location);
+      submitData.append("title", formData.title.trim());
+      submitData.append("description", formData.description.trim());
+      submitData.append("location", formData.location.trim());
       submitData.append("status", "PENDING");
 
-      // Note: userId will be extracted from JWT token by backend
-      // No need to send userId in form data
+      // **** THIS IS THE CHANGE ****
+      // Use authUser.id_user instead of authUser.id
+      if (authUser?.id_user) {
+        // Corrected: access id_user
+        submitData.append("userId", authUser.id_user); // Send as 'userId' for backend
+        console.log("User ID added to form data:", authUser.id_user);
+      } else {
+        throw new Error(
+          "User ID (id_user) not found in authUser object. Please log in again."
+        ); // More specific error
+      }
 
+      // Add image if selected
       if (formData.image) {
         submitData.append("image", formData.image);
+        console.log("Image added to form data:", formData.image.name);
       }
 
       // Get token from localStorage
       const token = localStorage.getItem("token");
       if (!token) {
-        throw new Error("Authentication token not found");
+        throw new Error("Authentication token not found. Please login again.");
       }
 
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
-      console.log("Submitting to:", `${apiUrl}/report`); // Debug log
+      console.log("Token found, length:", token.length);
 
-      const response = await fetch(`${apiUrl}/report`, {
+      // Fix API URL - remove trailing slash if present
+      const apiUrl =
+        import.meta.env.VITE_API_URL?.replace(/\/$/, "") ||
+        "http://localhost:3000";
+      const submitUrl = `${apiUrl}/report`;
+
+      console.log("Submitting to:", submitUrl);
+
+      const response = await fetch(submitUrl, {
         method: "POST",
-        credentials: "include",
         headers: {
           Authorization: `Bearer ${token}`,
+          // Don't set Content-Type for FormData - browser will set it automatically with boundary
         },
+        credentials: "include", // Important for cookies if using cookie auth as fallback
         body: submitData,
       });
 
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers);
+
       // Check if response is ok before trying to parse JSON
       if (!response.ok) {
-        // Try to get error message from response
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`;
         try {
           const errorData = await response.json();
-          errorMessage = errorData.message || errorData.error || errorMessage;
+          console.error("Error response:", errorData);
+          errorMessage = errorData.error || errorData.message || errorMessage;
         } catch (jsonError) {
-          // If JSON parsing fails, use the HTTP status message
           console.warn("Could not parse error response as JSON:", jsonError);
+          // Try to get response as text
+          try {
+            const textResponse = await response.text();
+            console.error("Error response text:", textResponse);
+            if (textResponse) {
+              errorMessage = textResponse;
+            }
+          } catch (textError) {
+            console.warn("Could not get response as text:", textError);
+          }
         }
         throw new Error(errorMessage);
       }
 
       const result = await response.json();
+      console.log("Submit successful:", result);
 
       setMessage({
         type: "success",
@@ -135,24 +177,35 @@ export default function LaporanPage() {
       const fileInput = document.getElementById("file");
       if (fileInput) fileInput.value = "";
 
-      // Optional: Navigate back to dashboard after successful submission
+      // Navigate back to dashboard after successful submission
       setTimeout(() => {
         navigate("/dashboard");
       }, 2000);
     } catch (error) {
       console.error("Submit error:", error);
 
-      // Provide more specific error messages
       let errorMessage = "An error occurred while submitting the report.";
 
       if (error.message.includes("Failed to fetch")) {
         errorMessage =
-          "Connection failed. Please check if the server is running and CORS is configured properly.";
-      } else if (error.message.includes("CORS")) {
-        errorMessage =
-          "CORS policy error. Please contact the administrator to configure server permissions.";
-      } else if (error.message.includes("NetworkError")) {
-        errorMessage = "Network error. Please check your internet connection.";
+          "Connection failed. Please check your internet connection.";
+      } else if (error.message.includes("Authentication token not found")) {
+        errorMessage = "Please login again to submit a report.";
+        setTimeout(() => navigate("/login"), 2000);
+      } else if (
+        error.message.includes("401") ||
+        error.message.includes("Token tidak ditemukan")
+      ) {
+        errorMessage = "Your session has expired. Please login again.";
+        localStorage.removeItem("token");
+        setTimeout(() => navigate("/login"), 2000);
+      } else if (
+        error.message.includes("403") ||
+        error.message.includes("Token tidak valid")
+      ) {
+        errorMessage = "Invalid session. Please login again.";
+        localStorage.removeItem("token");
+        setTimeout(() => navigate("/login"), 2000);
       } else if (error.message) {
         errorMessage = error.message;
       }
@@ -165,7 +218,6 @@ export default function LaporanPage() {
       setIsSubmitting(false);
     }
   };
-
   const handleLogin = () => {
     navigate("/login");
   };
