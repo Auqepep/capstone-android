@@ -3,48 +3,63 @@ import Button from "../../components/Button";
 import { useAuth } from "../../contexts/AuthContexts"; // Import useAuth hook
 import imgbuilding from "../../assets/building.svg";
 
+import heroImage from "../../assets/city8.png";
+import problem1Image from "../../assets/problem1.jpg";
+import problem2Image from "../../assets/problem2.png";
+import problem3Image from "../../assets/problem3.jpg";
+
+const heroImageUrl = heroImage;
+const beforeAfterImages = [
+  { src: problem1Image, alt: "Problem img" },
+  { src: problem2Image, alt: "Problem img" },
+  { src: problem3Image, alt: "Problem img" },
+];
+
 const LandingPage = () => {
   // Use the auth context instead of props
   const { isLoggedIn, user } = useAuth();
 
   return (
-    <div className="relative flex flex-col md:flex-row items-start justify-between container mx-auto px-4 mt-10">
-      <div className="w-full md:w-3/5 z-10">
-        <h1 className="text-4xl font-bold mb-4 text-gray-800">
-          Selamat datang{isLoggedIn ? " kembali!" : "!"}
-        </h1>
+    <div className="bg-white text-gray-800 font-sans">
+      <main>
+        <div className="w-full h-80 md:h-[500px] bg-gray-300">
+          <img
+            src={heroImageUrl}
+            alt="Cityscape"
+            className="w-full h-full object-cover"
+          />
+        </div>
 
-        {isLoggedIn ? (
-          <p className="max-w-xl mb-8 text-gray-700">
-            Senang melihat Anda kembali! Siap membuat laporan perbaikan untuk
-            lingkungan kita?
+        <div className="container mx-auto px-6 pt-12 relative z-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            {beforeAfterImages.map((image, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg overflow-hidden transition-transform duration-300 hover:-translate-y-2">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  className="w-full h-40 md:h-56 object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="container mx-auto px-6 py-16 md:py-24 text-center">
+          <h1 className="text-3xl md:text-5xl font-bold tracking-tighter mb-4">
+            See It. Report It. Get It Fixed.
+          </h1>
+          <p className="max-w-2xl mx-auto text-base md:text-lg text-gray-600 mb-8">
+            Spotted a pothole, broken streetlight, or other public facility damage? Report local issues directly from our website and help build a better community, together.
           </p>
-        ) : (
-          <p className="max-w-xl mb-8 text-gray-700">
-            Hi City Fixers! Selamat datang ke website perbaikan infrastruktur
-            lingkungan kita sekitar. Kita berharap kalian bisa update
-            perihal-perihal negatif yang mengganggu day to day anda.
-          </p>
-        )}
-
-        <h2 className="text-2xl font-bold mb-4 text-gray-800">
-          Tempat Masyarakat Berkumpul dan Berkritis
-        </h2>
-
-        <p className="max-w-xl mb-8 text-gray-700">
-          Website ini dibuat untuk menjaga integritas infrastruktur lingkungan
-          sekitar kita. Ayo kita menjunjung tinggi integritas infrastruktur kita
-          agar tetap terawat.
-        </p>
 
         {/* Conditionally render based on isLoggedIn */}
         {isLoggedIn ? (
           // Content when logged in
           <>
             <h3 className="text-xl font-bold mb-6 text-gray-800">
-              Siap membuat laporan baru?
+              Ready to create a new report?
             </h3>
-            <div className="flex gap-4 flex-col sm:flex-row">
+            <div className="flex justify-center gap-4">
               {/* Button to create a report */}
               <Button
                 title={"Buat Laporan"}
@@ -58,9 +73,9 @@ const LandingPage = () => {
           // Content when NOT logged in
           <>
             <h3 className="text-xl font-bold mb-6 text-gray-800">
-              Mau bikin laporan? Lapor diri dulu
+              Want to make a report? Log in first.
             </h3>
-            <div className="flex gap-4 flex-col sm:flex-row">
+            <div className="flex justify-center gap-4">
               {/* Original Login button */}
               <Button
                 title={"Login"}
@@ -72,14 +87,7 @@ const LandingPage = () => {
           </>
         )}
       </div>
-
-      <div className="w-full md:w-2/5 flex justify-end">
-        <img
-          src={imgbuilding}
-          alt="Background"
-          className="w-full max-w-md p-10" // Fixed the className - w-100 isn't valid Tailwind
-        />
-      </div>
+      </main>
     </div>
   );
 };

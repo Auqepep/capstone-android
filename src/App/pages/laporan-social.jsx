@@ -1,15 +1,11 @@
-import {
-  MoreHorizontal,
-  Heart,
-  MessageSquare,
-  Repeat2,
-  Eye,
-  Edit,
-  Search,
-} from "lucide-react";
+import { MoreHorizontal, Heart, MessageSquare, Search } from "lucide-react";
 import { Card, CardContent, CardHeader } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "../../components/ui/avatar";
 import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import {
@@ -19,80 +15,117 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../components/ui/select";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../contexts/AuthContexts";
 
-// Sample initial data for posts with commentsList
-const initialPostsData = [
-  {
-    id: 1,
-    author: "Ann Louis",
-    authorAvatar: null,
-    time: "4 jam yang lalu",
-    location: "Jakarta Creative Hub",
-    description:
-      "Hello everybody! We are preparing a new fresh campaign. Here's a sneak peek :)",
-    likes: 1250,
-    shares: 24,
-    status: "Pending",
-    isLiked: false,
-    commentsList: [
-      { id: "c1-1", user: "Bob", text: "Looks exciting!" },
-      { id: "c1-2", user: "Charlie", text: "Can't wait to see more." },
-      { id: "c1-3", user: "David", text: "Great initiative!" },
-      { id: "c1-4", user: "Eve", text: "Keep up the good work." },
-    ],
-  },
-  {
-    id: 2,
-    author: "John Doe",
-    authorAvatar: null,
-    time: "6 jam yang lalu",
-    location: "Main Street, Downtown",
-    description: "Found this broken sidewalk. Needs immediate attention!",
-    likes: 450,
-    shares: 12,
-    status: "Diproses",
-    isLiked: true,
-    commentsList: [
-      { id: "c2-1", user: "Frank", text: "Oh no, hope it gets fixed soon." },
-      { id: "c2-2", user: "Grace", text: "Thanks for reporting, John!" },
-    ],
-  },
-  {
-    id: 3,
-    author: "Sarah Kim",
-    authorAvatar: null,
-    time: "1 hari yang lalu",
-    location: "5th Avenue Pothole",
-    description:
-      "The pothole on 5th Avenue has been repaired. Thanks for your quick response!",
-    likes: 780,
-    shares: 18,
-    status: "Selesai",
-    isLiked: false,
-    commentsList: [
-      { id: "c3-1", user: "Henry", text: "Awesome news!" },
-      { id: "c3-2", user: "Ivy", text: "That was quick." },
-      { id: "c3-3", user: "Jack", text: "Finally!" },
-    ],
-  },
-];
+// --- Helper Functions ---
 
-// Status badge color mapping
-const statusColors = {
-  "Pending": "destructive",
-  "Diproses": "warning",
-  "Selesai": "success",
+function formatTimeAgo(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const seconds = Math.round((now - date) / 1000);
+  const minutes = Math.round(seconds / 60);
+  const hours = Math.round(minutes / 60);
+  const days = Math.round(hours / 24);
+
+  if (seconds < 60) return `${seconds} detik yang lalu`;
+  if (minutes < 60) return `${minutes} menit yang lalu`;
+  if (hours < 24) return `${hours} jam yang lalu`;
+  return `${days} hari yang lalu`;
+}
+
+const statusMap = {
+  PENDING: { text: "PENDING", variant: "destructive" },
+  DIPROSES: { text: "DIPROSES", variant: "warning" },
+  SELESAI: { text: "SELESAI", variant: "success" },
 };
 
+// --- Main Component ---
+
 function SocialFeed() {
-  const [postsData, setPostsData] = useState(initialPostsData);
+  const [postsData, setPostsData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // State untuk bagian komentar
   const [activeCommentPostId, setActiveCommentPostId] = useState(null);
   const [newCommentText, setNewCommentText] = useState("");
+
+  const { user } = useAuth();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+
+      const apiUrl = import.meta.env.VITE_API_URL;
+
+      if (!apiUrl) {
+        setError(
+          "API URL is not configured. Please set VITE_API_URL in your .env file."
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        const [reportsResponse, usersResponse] = await Promise.all([
+          fetch(`${apiUrl}/report`),
+          fetch(`${apiUrl}/user/all`),
+        ]);
+
+        if (!reportsResponse.ok)
+          throw new Error(
+            `Failed to fetch reports: Status ${reportsResponse.status}`
+          );
+        if (!usersResponse.ok)
+          throw new Error(
+            `Failed to fetch users: Status ${usersResponse.status}`
+          );
+
+        const reports = await reportsResponse.json();
+        const { data: users } = await usersResponse.json();
+
+        const userMap = new Map(users.map((user) => [user.id_user, user]));
+
+        const transformedPosts = reports.map((report) => {
+          const author = userMap.get(report.userId) || {
+            user_name: "Unknown User",
+            user_profile: null,
+          };
+
+          return {
+            id: report.id,
+            author: author.user_name,
+            authorAvatar: author.user_profile,
+            time: formatTimeAgo(report.createdAt),
+            location: report.location,
+            description: report.description,
+            image: report.imageUrl,
+            likes: report.likes || 0,
+            shares: report.shares || 0,
+            status: statusMap[report.status]?.text || "Unknown",
+            isLiked: false,
+            commentsList: report.comments.map((comment) => ({
+              id: comment.id,
+              user: userMap.get(comment.userId)?.user_name || "Guest",
+              text: comment.text,
+            })),
+          };
+        });
+
+        setPostsData(transformedPosts);
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching social feed data:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const filteredPosts = postsData.filter((post) => {
     const searchTermLower = searchTerm.toLowerCase();
@@ -124,35 +157,87 @@ function SocialFeed() {
     setActiveCommentPostId((currentOpenId) =>
       currentOpenId === postId ? null : postId
     );
-    setNewCommentText(""); // Reset input field ketika membuka/menutup
+    setNewCommentText("");
   };
 
-  const handleAddComment = (postId) => {
-    if (!newCommentText.trim()) return; // Jangan tambahkan komentar kosong
+  const handleAddComment = async (postId) => {
+    if (!newCommentText.trim()) return;
 
-    setPostsData((prevPosts) =>
-      prevPosts.map((post) => {
-        if (post.id === postId) {
-          const newComment = {
-            id: `comment-${Date.now()}-${Math.random()}`, // ID unik sederhana
-            user: "You", // Ganti dengan nama pengguna yang login jika ada
-            text: newCommentText,
-          };
-          return {
-            ...post,
-            commentsList: [...post.commentsList, newComment],
-          };
-        }
-        return post;
-      })
+    if (!user) {
+      alert("You must be logged in to post a comment.");
+      return;
+    }
+
+    const loggedInUserId = user.id_user;
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(`${apiUrl}/comment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          text: newCommentText,
+          reportId: postId,
+          userId: loggedInUserId,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Backend error:", errorData);
+        throw new Error(`Failed to post comment: Status ${response.status}`);
+      }
+
+      const newCommentFromServer = await response.json();
+
+      setPostsData((prevPosts) =>
+        prevPosts.map((post) => {
+          if (post.id === postId) {
+            const newCommentForUI = {
+              id: newCommentFromServer.id,
+              user: "You",
+              text: newCommentFromServer.text,
+            };
+            return {
+              ...post,
+              commentsList: [...post.commentsList, newCommentForUI],
+            };
+          }
+          return post;
+        })
+      );
+
+      setNewCommentText("");
+    } catch (err) {
+      console.error("Error adding comment:", err);
+      alert("Could not post your comment. Please try again.");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading posts...
+      </div>
     );
-    setNewCommentText(""); // Kosongkan input field setelah post
-  };
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center min-h-screen text-red-500">
+        Error: {error}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex font-header">
       <div className="w-64 p-4 border-r bg-white">
-        {/* ... Filter sidebar (tidak berubah) ... */}
         <h2 className="text-3xl font-bold mb-4">FILTER</h2>
         <div className="space-y-4">
           <div className="relative">
@@ -172,9 +257,9 @@ function SocialFeed() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                <SelectItem value="Belum Jalan">Belum Jalan</SelectItem>
-                <SelectItem value="Dalam progress">Dalam Progress</SelectItem>
-                <SelectItem value="Fixed">Fixed</SelectItem>
+                <SelectItem value="PENDING">PENDING</SelectItem>
+                <SelectItem value="DIPROSES">DIPROSES</SelectItem>
+                <SelectItem value="SELESAI">SELESAI</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -187,7 +272,6 @@ function SocialFeed() {
             filteredPosts.map((post) => (
               <Card key={post.id} className="overflow-hidden">
                 <CardHeader className="p-4 pb-0">
-                  {/* ... CardHeader (tidak banyak berubah) ... */}
                   <div className="flex justify-between items-start">
                     <div className="flex items-start space-x-3">
                       <Avatar>
@@ -206,7 +290,11 @@ function SocialFeed() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge
-                        variant={statusColors[post.status]}
+                        variant={
+                          Object.values(statusMap).find(
+                            (s) => s.text === post.status
+                          )?.variant || "default"
+                        }
                         className="capitalize"
                       >
                         {post.status}
@@ -231,14 +319,6 @@ function SocialFeed() {
                     </div>
                   )}
                   <div className="flex items-center text-sm text-gray-500 mb-3">
-                    <span className="flex items-center mr-4">
-                      <Heart
-                        className={`h-4 w-4 mr-1 ${
-                          post.isLiked ? "text-red-500 fill-red-500" : ""
-                        }`}
-                      />{" "}
-                      {post.likes} likes
-                    </span>
                     <span
                       className="flex items-center mr-4 cursor-pointer"
                       onClick={() => toggleCommentSection(post.id)}
@@ -251,23 +331,6 @@ function SocialFeed() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className={`flex-1 ${
-                        post.isLiked
-                          ? "text-red-500 hover:text-red-600"
-                          : "text-gray-600 hover:text-red-500"
-                      }`}
-                      onClick={() => handleLike(post.id)}
-                    >
-                      <Heart
-                        className={`h-4 w-4 mr-2 ${
-                          post.isLiked ? "fill-current" : ""
-                        }`}
-                      />
-                      {post.isLiked ? "LIKED" : "LIKE"}
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
                       className="flex-1 text-gray-600 hover:text-blue-500"
                       onClick={() => toggleCommentSection(post.id)}
                     >
@@ -275,7 +338,7 @@ function SocialFeed() {
                     </Button>
                   </div>
 
-                  {/* Bagian Komentar yang bisa expand/collapse */}
+                  {/* Comments Section */}
                   {activeCommentPostId === post.id && (
                     <div className="mt-4 pt-4 border-t">
                       <h4 className="text-sm font-semibold mb-3">
@@ -283,64 +346,63 @@ function SocialFeed() {
                       </h4>
                       <div className="space-y-3 max-h-48 overflow-y-auto mb-4 pr-2">
                         {post.commentsList.length > 0 ? (
-                          // Tampilkan N komentar terakhir, atau semua jika kurang dari N+1
-                          // Di sini kita balik arraynya agar komentar terbaru di atas, lalu ambil 4 teratas dari yang terbaru
-                          [...post.commentsList]
-                            .reverse()
-                            .slice(0, 4)
-                            .map((comment) => (
-                              <div
-                                key={comment.id}
-                                className="text-xs bg-gray-100 p-2 rounded-md shadow-sm"
-                              >
-                                <span className="font-semibold text-gray-700">
-                                  {comment.user}:{" "}
-                                </span>
-                                <span className="text-gray-600">
-                                  {comment.text}
-                                </span>
-                              </div>
-                            ))
+                          [...post.commentsList].reverse().map((comment) => (
+                            <div
+                              key={comment.id}
+                              className="text-xs bg-gray-100 p-2 rounded-md shadow-sm"
+                            >
+                              <span className="font-semibold text-gray-700">
+                                {comment.user}:{" "}
+                              </span>
+                              <span className="text-gray-600">
+                                {comment.text}
+                              </span>
+                            </div>
+                          ))
                         ) : (
                           <p className="text-xs text-gray-500">
                             No comments yet. Be the first to comment!
                           </p>
                         )}
-                        {/* Opsi untuk melihat semua komentar jika lebih dari 4 */}
-                        {post.commentsList.length > 4 && (
-                          <p className="text-xs text-blue-500 hover:underline cursor-pointer mt-2">
-                            View all {post.commentsList.length - 4} other
-                            comments
-                          </p>
-                        )}
                       </div>
-                      <div className="flex space-x-2 items-center">
-                        <Avatar size="sm" className="w-8 h-8">
-                          {" "}
-                          {/* Avatar kecil untuk input komentar */}
-                          <AvatarFallback>Y</AvatarFallback>{" "}
-                          {/* Ganti 'Y' dengan inisial user yang login */}
-                        </Avatar>
-                        <Input
-                          type="text"
-                          placeholder="Write a comment..."
-                          value={newCommentText}
-                          onChange={(e) => setNewCommentText(e.target.value)}
-                          className="flex-1 text-sm"
-                          onKeyPress={(e) => {
-                            if (e.key === "Enter" && !e.shiftKey) {
-                              e.preventDefault(); // Mencegah newline di input jika hanya Enter
-                              handleAddComment(post.id);
-                            }
-                          }}
-                        />
-                        <Button
-                          onClick={() => handleAddComment(post.id)}
-                          size="sm"
-                        >
-                          Post
-                        </Button>
-                      </div>
+
+                      {user ? (
+                        <div className="flex space-x-2 items-center">
+                          <Avatar size="sm" className="w-8 h-8">
+                            <AvatarImage
+                              src={
+                                user.user_profile || "/placeholder-avatar.svg"
+                              }
+                            />
+                            <AvatarFallback>
+                              {user.user_name.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <Input
+                            type="text"
+                            placeholder="Write a comment..."
+                            value={newCommentText}
+                            onChange={(e) => setNewCommentText(e.target.value)}
+                            className="flex-1 text-sm"
+                            onKeyPress={(e) => {
+                              if (e.key === "Enter" && !e.shiftKey) {
+                                e.preventDefault();
+                                handleAddComment(post.id);
+                              }
+                            }}
+                          />
+                          <Button
+                            onClick={() => handleAddComment(post.id)}
+                            size="sm"
+                          >
+                            Post
+                          </Button>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-center text-gray-500 p-2 bg-gray-100 rounded-md">
+                          Please log in to leave a comment.
+                        </p>
+                      )}
                     </div>
                   )}
                 </CardContent>
