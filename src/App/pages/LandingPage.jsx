@@ -62,7 +62,7 @@ const LandingPage = () => {
             <div className="flex justify-center gap-4">
               {/* Button to create a report */}
               <Button
-                title={"Buat Laporan"}
+                title={"Make a Report"}
                 condition={false}
                 to={"/laporan"}
                 className="px-50"

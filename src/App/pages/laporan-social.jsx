@@ -1,4 +1,4 @@
-import { MoreHorizontal, Heart, MessageSquare, Search } from "lucide-react";
+import { MoreHorizontal, MessageSquare, Search, Trash2 } from "lucide-react";
 import { Card, CardContent, CardHeader } from "../../components/ui/card";
 import { Button } from "../../components/ui/button";
 import {
@@ -58,13 +58,10 @@ function SocialFeed() {
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
-
       const apiUrl = import.meta.env.VITE_API_URL;
 
       if (!apiUrl) {
-        setError(
-          "API URL is not configured. Please set VITE_API_URL in your .env file."
-        );
+        setError("API URL is not configured. Please set VITE_API_URL in your .env file.");
         setIsLoading(false);
         return;
       }
@@ -75,14 +72,8 @@ function SocialFeed() {
           fetch(`${apiUrl}/user/all`),
         ]);
 
-        if (!reportsResponse.ok)
-          throw new Error(
-            `Failed to fetch reports: Status ${reportsResponse.status}`
-          );
-        if (!usersResponse.ok)
-          throw new Error(
-            `Failed to fetch users: Status ${usersResponse.status}`
-          );
+        if (!reportsResponse.ok) throw new Error(`Failed to fetch reports: Status ${reportsResponse.status}`);
+        if (!usersResponse.ok) throw new Error(`Failed to fetch users: Status ${usersResponse.status}`);
 
         const reports = await reportsResponse.json();
         const { data: users } = await usersResponse.json();
@@ -94,7 +85,6 @@ function SocialFeed() {
             user_name: "Unknown User",
             user_profile: null,
           };
-
           return {
             id: report.id,
             author: author.user_name,
@@ -103,18 +93,16 @@ function SocialFeed() {
             location: report.location,
             description: report.description,
             image: report.imageUrl,
-            likes: report.likes || 0,
-            shares: report.shares || 0,
             status: statusMap[report.status]?.text || "Unknown",
-            isLiked: false,
+            // Menambahkan userId ke setiap comment untuk pengecekan kepemilikan
             commentsList: report.comments.map((comment) => ({
               id: comment.id,
               user: userMap.get(comment.userId)?.user_name || "Guest",
               text: comment.text,
+              userId: comment.userId, // Penting untuk fitur delete
             })),
           };
         });
-
         setPostsData(transformedPosts);
       } catch (err) {
         setError(err.message);
@@ -123,7 +111,6 @@ function SocialFeed() {
         setIsLoading(false);
       }
     };
-
     fetchData();
   }, []);
 
@@ -138,21 +125,6 @@ function SocialFeed() {
     return matchesSearch && matchesStatus;
   });
 
-  const handleLike = (postId) => {
-    setPostsData((prevPosts) =>
-      prevPosts.map((post) => {
-        if (post.id === postId) {
-          return {
-            ...post,
-            likes: post.isLiked ? post.likes - 1 : post.likes + 1,
-            isLiked: !post.isLiked,
-          };
-        }
-        return post;
-      })
-    );
-  };
-
   const toggleCommentSection = (postId) => {
     setActiveCommentPostId((currentOpenId) =>
       currentOpenId === postId ? null : postId
@@ -162,7 +134,6 @@ function SocialFeed() {
 
   const handleAddComment = async (postId) => {
     if (!newCommentText.trim()) return;
-
     if (!user) {
       alert("You must be logged in to post a comment.");
       return;
@@ -194,15 +165,18 @@ function SocialFeed() {
       }
 
       const newCommentFromServer = await response.json();
+      
+      // Refresh data untuk mendapatkan comment terbaru dengan ID dan userId yang benar
+      const newCommentForUI = {
+        id: newCommentFromServer.id,
+        user: user.user_name, // Tampilkan nama user langsung
+        text: newCommentFromServer.text,
+        userId: loggedInUserId,
+      };
 
       setPostsData((prevPosts) =>
         prevPosts.map((post) => {
           if (post.id === postId) {
-            const newCommentForUI = {
-              id: newCommentFromServer.id,
-              user: "You",
-              text: newCommentFromServer.text,
-            };
             return {
               ...post,
               commentsList: [...post.commentsList, newCommentForUI],
@@ -211,7 +185,6 @@ function SocialFeed() {
           return post;
         })
       );
-
       setNewCommentText("");
     } catch (err) {
       console.error("Error adding comment:", err);
@@ -219,20 +192,52 @@ function SocialFeed() {
     }
   };
 
+  // --- FUNGSI BARU UNTUK HAPUS KOMENTAR ---
+  const handleDeleteComment = async (commentId, postId) => {
+    if (!window.confirm("Are you sure you want to delete this comment?")) {
+      return;
+    }
+
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL;
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${apiUrl}/comment/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete comment.");
+      }
+
+      // Update state secara lokal untuk menghilangkan komentar
+      setPostsData(prevPosts =>
+        prevPosts.map(post => {
+          if (post.id === postId) {
+            return {
+              ...post,
+              commentsList: post.commentsList.filter(c => c.id !== commentId),
+            };
+          }
+          return post;
+        })
+      );
+
+    } catch (err) {
+      console.error("Error deleting comment:", err);
+      alert("Could not delete comment. Please try again.");
+    }
+  };
+
+
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        Loading posts...
-      </div>
-    );
+    return <div className="flex justify-center items-center min-h-screen">Loading posts...</div>;
   }
 
   if (error) {
-    return (
-      <div className="flex justify-center items-center min-h-screen text-red-500">
-        Error: {error}
-      </div>
-    );
+    return <div className="flex justify-center items-center min-h-screen text-red-500">Error: {error}</div>;
   }
 
   return (
@@ -279,9 +284,7 @@ function SocialFeed() {
                           src={post.authorAvatar || "/placeholder-avatar.svg"}
                           alt={post.author}
                         />
-                        <AvatarFallback>
-                          {post.author.charAt(0).toUpperCase()}
-                        </AvatarFallback>
+                        <AvatarFallback>{post.author.charAt(0).toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div>
                         <div className="font-medium">{post.author}</div>
@@ -290,11 +293,7 @@ function SocialFeed() {
                     </div>
                     <div className="flex items-center space-x-2">
                       <Badge
-                        variant={
-                          Object.values(statusMap).find(
-                            (s) => s.text === post.status
-                          )?.variant || "default"
-                        }
+                        variant={Object.values(statusMap).find((s) => s.text === post.status)?.variant || "default"}
                         className="capitalize"
                       >
                         {post.status}
@@ -304,9 +303,7 @@ function SocialFeed() {
                 </CardHeader>
                 <CardContent className="p-4 font-body">
                   {post.location && (
-                    <p className="text-sm text-gray-700 font-semibold mb-1">
-                      Lokasi: {post.location}
-                    </p>
+                    <p className="text-sm text-gray-700 font-semibold mb-1">Lokasi: {post.location}</p>
                   )}
                   <p className="mb-3 text-gray-800">{post.description}</p>
                   {post.image && (
@@ -319,64 +316,43 @@ function SocialFeed() {
                     </div>
                   )}
                   <div className="flex items-center text-sm text-gray-500 mb-3">
-                    <span
-                      className="flex items-center mr-4 cursor-pointer"
-                      onClick={() => toggleCommentSection(post.id)}
-                    >
-                      <MessageSquare className="h-4 w-4 mr-1" />{" "}
-                      {post.commentsList.length} comments
+                    <span className="flex items-center mr-4 cursor-pointer" onClick={() => toggleCommentSection(post.id)}>
+                      <MessageSquare className="h-4 w-4 mr-1" /> {post.commentsList.length} comments
                     </span>
                   </div>
                   <div className="flex border-t pt-3">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="flex-1 text-gray-600 hover:text-blue-500"
-                      onClick={() => toggleCommentSection(post.id)}
-                    >
+                    <Button variant="ghost" size="sm" className="flex-1 text-gray-600 hover:text-blue-500" onClick={() => toggleCommentSection(post.id)}>
                       <MessageSquare className="h-4 w-4 mr-2" /> COMMENT
                     </Button>
                   </div>
-
-                  {/* Comments Section */}
                   {activeCommentPostId === post.id && (
                     <div className="mt-4 pt-4 border-t">
-                      <h4 className="text-sm font-semibold mb-3">
-                        Comments ({post.commentsList.length})
-                      </h4>
+                      <h4 className="text-sm font-semibold mb-3">Comments ({post.commentsList.length})</h4>
                       <div className="space-y-3 max-h-48 overflow-y-auto mb-4 pr-2">
                         {post.commentsList.length > 0 ? (
                           [...post.commentsList].reverse().map((comment) => (
-                            <div
-                              key={comment.id}
-                              className="text-xs bg-gray-100 p-2 rounded-md shadow-sm"
-                            >
-                              <span className="font-semibold text-gray-700">
-                                {comment.user}:{" "}
-                              </span>
-                              <span className="text-gray-600">
-                                {comment.text}
-                              </span>
+                            <div key={comment.id} className="flex justify-between items-center text-xs bg-gray-100 p-2 rounded-md shadow-sm">
+                              <div>
+                                <span className="font-semibold text-gray-700">{comment.user}: </span>
+                                <span className="text-gray-600">{comment.text}</span>
+                              </div>
+                              {/* --- TOMBOL HAPUS KOMENTAR --- */}
+                              {user && (user.id_user === comment.userId || user.role.role_name === 'admin') && (
+                                <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => handleDeleteComment(comment.id, post.id)}>
+                                  <Trash2 className="h-4 w-4 text-red-500 hover:text-red-700" />
+                                </Button>
+                              )}
                             </div>
                           ))
                         ) : (
-                          <p className="text-xs text-gray-500">
-                            No comments yet. Be the first to comment!
-                          </p>
+                          <p className="text-xs text-gray-500">No comments yet. Be the first to comment!</p>
                         )}
                       </div>
-
                       {user ? (
                         <div className="flex space-x-2 items-center">
                           <Avatar size="sm" className="w-8 h-8">
-                            <AvatarImage
-                              src={
-                                user.user_profile || "/placeholder-avatar.svg"
-                              }
-                            />
-                            <AvatarFallback>
-                              {user.user_name.charAt(0).toUpperCase()}
-                            </AvatarFallback>
+                            <AvatarImage src={user.user_profile || "/placeholder-avatar.svg"}/>
+                            <AvatarFallback>{user.user_name.charAt(0).toUpperCase()}</AvatarFallback>
                           </Avatar>
                           <Input
                             type="text"
@@ -391,17 +367,10 @@ function SocialFeed() {
                               }
                             }}
                           />
-                          <Button
-                            onClick={() => handleAddComment(post.id)}
-                            size="sm"
-                          >
-                            Post
-                          </Button>
+                          <Button onClick={() => handleAddComment(post.id)} size="sm">Post</Button>
                         </div>
                       ) : (
-                        <p className="text-sm text-center text-gray-500 p-2 bg-gray-100 rounded-md">
-                          Please log in to leave a comment.
-                        </p>
+                        <p className="text-sm text-center text-gray-500 p-2 bg-gray-100 rounded-md">Please log in to leave a comment.</p>
                       )}
                     </div>
                   )}
