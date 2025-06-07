@@ -90,6 +90,7 @@ function SocialFeed() {
             author: author.user_name,
             authorAvatar: author.user_profile,
             time: formatTimeAgo(report.createdAt),
+            title: report.title, // Added title field
             location: report.location,
             description: report.description,
             image: report.imageUrl,
@@ -119,6 +120,7 @@ function SocialFeed() {
     const matchesSearch =
       post.description.toLowerCase().includes(searchTermLower) ||
       post.author.toLowerCase().includes(searchTermLower) ||
+      (post.title && post.title.toLowerCase().includes(searchTermLower)) || // Added title to search
       (post.location && post.location.toLowerCase().includes(searchTermLower));
     const matchesStatus =
       statusFilter === "all" || post.status === statusFilter;
@@ -302,6 +304,10 @@ function SocialFeed() {
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 font-body">
+                  {/* Added title display */}
+                  {post.title && (
+                    <h4 className="text-lg font-semibold text-gray-800 mb-2">{post.title}</h4>
+                  )}
                   {post.location && (
                     <p className="text-sm text-gray-700 font-semibold mb-1">Lokasi: {post.location}</p>
                   )}

@@ -13,7 +13,7 @@ import ProtectedRoute from "../components/ProtectedRoute";
 function App() {
   return (
     <AuthProvider>
-      <div className="min-h-screen flex flex-col bg-[#F7FBFA]">
+      <div className="min-h-screen flex flex-col bg-[#F7FBFA] font-body">
         <Navbar />
        
         <main className="flex-1 p-2 mx-auto w-full">
